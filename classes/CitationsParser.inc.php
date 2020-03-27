@@ -1,0 +1,181 @@
+<?php
+
+class CitationsParser
+{
+	function getScopusCitedBy($doi, $apiKey)
+	{
+		$url = "https://api.elsevier.com/content/search/scopus?query=DOI(" . $doi . ")&field=eid,citedby-count&apiKey=" . $apiKey;
+
+
+		$data = $this->getAPIContent($url);
+
+		$ret = array();
+		$ret["scopus_count"] = 0;
+		$ret["scopus_url"] = null;
+		if ($data != null) {
+			$xml = simplexml_load_string($data);
+			if ($xml) {
+				$ns = $xml->getNamespaces(true);
+				if (!$xml->{'entry'}->{'error'} && $xml->children($ns['opensearch'])->{"totalResults"} != "0" && $xml->{'entry'}->{'citedby-count'}) {
+					$scopus_url = $xml->{'entry'}->children($ns['prism'])->{'url'};
+					$ret["scopus_count"] = intval($xml->{'entry'}->{'citedby-count'});
+					if ($scopus_url) {
+						$ret["scopus_url"] = $this->getScopusURL($scopus_url);
+					}
+					if ($ret["scopus_count"] != 0) {
+						$url = "https://api.elsevier.com/content/search/scopus?query=REF(" . $xml->{'entry'}->{'eid'} . ")&apiKey=" . $apiKey;
+						$xml = simplexml_load_string($data = $this->getAPIContent($url));
+						$ns = $xml->getNamespaces(true);
+						$scopus_list = array();
+						if (!$xml->{'entry'}->{'error'} && $xml->children($ns['opensearch'])->{"totalResults"} != "0") {
+							foreach ($xml->{'entry'} as $entry) {
+								$citeItem = array(
+									"journal_title" => $entry->children($ns['prism'])->{'publicationName'},
+									"article_title" => $entry->children($ns['dc'])->{'title'},
+									"year" => substr($entry->children($ns['prism'])->{'coverDate'}, 0, 4),
+									"volume" => $entry->children($ns['prism'])->{'volume'},
+									"issue" => $entry->children($ns['prism'])->{'issueIdentifier'},
+									"first_page" => $entry->children($ns['prism'])->{"pageRange"},
+									"doi" => $entry->children($ns['prism'])->{"doi"},
+									"authors" => $entry->children($ns['dc'])->{"creator"},
+									"type" => 'scopus'
+								);
+								array_push($scopus_list, $citeItem);
+							}
+							$ret["scopus_list"] = $scopus_list;
+						}
+					}
+				}
+			}
+		}
+		return $ret;
+	}
+
+	function getScopusCitations($title, $year, $apiKey)
+	{
+		$url_2 = "https://api.elsevier.com/content/search/scopus?query=REFTITLE('" . $title . "')&apiKey=" . $apiKey;
+	}
+
+
+	function getCrossrefCitedBy($doi, $api_user, $api_pwd)
+	{
+		$url = "https://doi.crossref.org/servlet/getForwardLinks?usr=" . $api_user . "&pwd=" . $api_pwd . "&doi=" . $doi;
+		$data = $this->getAPIContent($url);
+		$ret = array();
+		$ret["crossref_count"] = 0;
+		$ret["crossref_url"] = null;
+		$ret["crossref_list"] = null;
+		if ($data != null) {
+			$xml = simplexml_load_string($data);
+			$link_list = $xml->{"query_result"}->{"body"}->{"forward_link"};
+			if ($link_list && sizeof($link_list) > 0) {
+				$ret["crossref_count"] = sizeof($link_list);
+				$crossref_list = array();
+				foreach ($link_list as $item) {
+					if ($item->{"journal_cite"}) {
+						$citeItem = $this->getArticleCite($doi, $item, "journal_cite");
+						array_push($crossref_list, $citeItem);
+					} else if ($item->{"book_cite"}) {
+						$citeItem = $this->getArticleCite($doi, $item, "book_cite");
+						array_push($crossref_list, $citeItem);
+					}
+				}
+				$ret["crossref_list"] = $crossref_list;
+			}
+		}
+		return $ret;
+	}
+
+	private function getScopusURL($url)
+	{
+		$data = $this->getAPIContent($url);
+		$xml = simplexml_load_string($data);
+		if ($xml) {
+			$url = $xml->xpath("//*[@rel='scopus']")[0]['href'];
+			if ($url)
+				return $url;
+		}
+		return null;
+	}
+
+
+	private function getAPIContent($url, $type = "text/xml")
+	{
+		$ch = curl_init();
+		curl_setopt_array($ch, array(
+			CURLOPT_URL => $url,
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_ENCODING => "",
+			CURLOPT_MAXREDIRS => 10,
+			CURLOPT_TIMEOUT => 30,
+			CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+			CURLOPT_CUSTOMREQUEST => "GET",
+			CURLOPT_HTTPHEADER => array(
+				"accept: " . $type,
+				"cache-control: no-cache",
+				"content-type: " . $type
+			),
+		));
+		if (curl_error($ch)) {
+			return null;
+		}
+		$data = curl_exec($ch);
+		curl_close($ch);
+		if ($data)
+			return $data;
+		else
+			return null;
+	}
+
+	/**
+	 * @param $doi
+	 * @param SimpleXMLElement $item
+	 * @return array
+	 */
+	public function getArticleCite($doi, $item, $type)
+	{
+		switch ($type) {
+			case "book_cite":
+				$t_1 = $item->{$type}->{"series_title"};
+				$t_2 = $item->{$type}->{"volume_title"};
+				break;
+			case "journal_cite":
+				$t_1 = $item->{$type}->{"journal_title"};
+				$t_2 = $item->{$type}->{"article_title"};
+				break;
+			default:
+				$t_1 = "";
+				$t_2 = "";
+		}
+
+		$citeItem = array(
+			"journal_title" => $t_1,
+			"article_title" => $t_2,
+			"year" => $item->{$type}->{"year"},
+			"volume" => $item->{$type}->{"volume"},
+			"issue" => $item->{$type}->{"issue"},
+			"first_page" => $item->{$type}->{"first_page"},
+			"type" => 'crossref'
+		);
+		foreach ($item->{$type}->{"doi"} as $doi) {
+			if ($doi['type'] == "journal_article" || $doi['type'] == "book_content")
+				$citeItem["doi"] = $doi;
+		}
+		$author_list = "";
+		$contri_list = $item->{$type}->{"contributors"}->{"contributor"};
+		$count = 0;
+		$size = sizeof($contri_list);
+		foreach ($contri_list as $contributor) {
+			$name = $contributor->{"given_name"} . " " . $contributor->{"surname"};
+			if (++$count < $size)
+				$name .= ", ";
+			if ($contributor['first-author'] == "true")
+				$author_list = $name . $author_list;
+			else
+				$author_list .= $name;
+		}
+		$citeItem["authors"] = $author_list;
+		return $citeItem;
+	}
+
+}
