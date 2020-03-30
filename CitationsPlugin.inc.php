@@ -25,13 +25,14 @@ class CitationsPlugin extends GenericPlugin
 	{
 		$success = parent::register($category, $path);
 		if ($success && $this->getEnabled()) {
-			/*$request = Application::getRequest();
+			$request = Application::getRequest();
 			$templateMgr = TemplateManager::getManager($request);
 			$templateMgr->addStyleSheet(
-				'mostViewedArticles',
-				$request->getBaseUrl() . '/' . $this->getPluginPath() . '/css/mostViewed.css'
-			);*/
+				'citations',
+				$request->getBaseUrl() . '/' . $this->getPluginPath() . '/css/citations.css'
+			);
 			HookRegistry::register('Templates::Article::Details', array($this, 'citationsContent'));
+			HookRegistry::register('LoadHandler', array($this, 'setPageHandler'));
 		}
 		return $success;
 	}
@@ -43,56 +44,42 @@ class CitationsPlugin extends GenericPlugin
 		$smarty =& $args[1];
 		$output =& $args[2];
 		$article = $smarty->getTemplateVars('article');
-		$pubId = null;
-		$ret = array();
-
-		$provider = 'all';
-		$showList = '';
-		$maxHeight = 500;
+		$pubId = $article->getStoredPubId('doi');
 
 
-		if ($article)
-			$pubId = $article->getStoredPubId('doi');
-		/* TESTCASE*/
+		$citationsShowList = true;
+		$citationsProvider = 'all';
+		$citationsShowTotal = true;
+
 		if ($pubId == null)
 			$pubId = '10.5964/ejop.v8i4.555';
-		/* #############  */
-		if ($pubId != null && '' != trim($pubId)) {
-			import('plugins.generic.citations.classes.CitationsParser');
-			$parser = new CitationsParser();
-			$settings = json_decode(file_get_contents("../../settings.json"));
-			switch ($provider) {
-				case 'scopus':
-					$ret = array_merge($ret, $parser->getScopusCitedBy($pubId, $settings->sca));
-					break;
-				case 'crossref':
-					$ret = array_merge($ret, $parser->getCrossrefCitedBy($pubId, $settings->cru, $settings->crp));
-					break;
-				case 'all':
-					$list = array();
-					$ret = array_merge($ret, $parser->getScopusCitedBy($pubId, $settings->sca));
-					$ret = array_merge($ret, $parser->getCrossrefCitedBy($pubId, $settings->cru, $settings->crp));
-					$list = array_merge($list, $ret['crossref_list']);
-					foreach ($ret['scopus_list'] as $scopus) {
-						$inList = false;
-						foreach ($list as $itm) {
-							if (trim($itm['doi']) == trim($scopus['doi'])) {
-								$inList = true;
-								break;
-							}
-						}
-						if (!$inList)
-							array_push($list, $scopus);
-					}
-					$ret['all_list'] = $list;
-					break;
-			}
-			$smarty->assign('citationsProvider', $provider);
-			$smarty->assign('citationsImagePath', $request->getBaseUrl() . '/' . $this->getPluginPath() . '/images/');
-			$smarty->assign('citationsId', $pubId);
-			$smarty->assign('citationsList', $ret);
+		if ($pubId != null && $pubId != '') {
+			$smarty->assign(array(
+				'citationsImagePath' => $request->getBaseUrl() . '/' . $this->getPluginPath() . '/images/',
+				'citationsId' => $pubId,
+				'citationsProvider' => $citationsProvider,
+				'citationsShowTotal' => $citationsShowTotal,
+				'citationsShowList' => $citationsShowList,
+				'citationsArgsList' => array('citationsId' => $pubId, 'citationsShowList' => $citationsShowList, 'citationsProvider' => $citationsProvider)
+			));
+			$smarty->addJavaScript(
+				'citations',
+				$request->getBaseUrl() . '/' . $this->getPluginPath() . '/js/citations.js'
+			);
 			$output .= $smarty->fetch($this->getTemplateResource('citations.tpl'));
 		}
+	}
+
+
+	public function setPageHandler($hookName, $params)
+	{
+		$page = $params[0];
+		if ($this->getEnabled() && $page === 'citations') {
+			$this->import('classes/CitationsHandler');
+			define('HANDLER_CLASS', 'CitationsHandler');
+			return true;
+		}
+		return false;
 	}
 
 }
