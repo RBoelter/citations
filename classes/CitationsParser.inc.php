@@ -4,6 +4,8 @@ class CitationsParser
 {
 	function getScopusCitedBy($doi, $apiKey, $loadList)
 	{
+		if ($apiKey == null || $apiKey == '' || $doi == null || $doi == '')
+			return array();
 		$url = "https://api.elsevier.com/content/search/scopus?query=DOI(" . $doi . ")&field=eid,citedby-count&apiKey=" . $apiKey;
 		$data = $this->getAPIContent($url);
 		$ret = array();
@@ -14,11 +16,7 @@ class CitationsParser
 			if ($xml) {
 				$ns = $xml->getNamespaces(true);
 				if (!$xml->{'entry'}->{'error'} && $xml->children($ns['opensearch'])->{"totalResults"} != "0" && $xml->{'entry'}->{'citedby-count'}) {
-					$scopus_url = $xml->{'entry'}->children($ns['prism'])->{'url'};
 					$ret["scopus_count"] = intval($xml->{'entry'}->{'citedby-count'});
-					if ($scopus_url) {
-						$ret["scopus_url"] = $this->getScopusURL($scopus_url);
-					}
 					if ($ret["scopus_count"] != 0 && $loadList == 1) {
 						$url = "https://api.elsevier.com/content/search/scopus?query=REF(" . $xml->{'entry'}->{'eid'} . ")&apiKey=" . $apiKey;
 						$xml = simplexml_load_string($data = $this->getAPIContent($url));
@@ -51,11 +49,12 @@ class CitationsParser
 
 	function getCrossrefCitedBy($doi, $api_user, $api_pwd, $loadList)
 	{
+		if ($api_user == null || $api_user == '' || $api_pwd == null || $api_pwd == '' || $doi == null || $doi == '')
+			return array();
 		$url = "https://doi.crossref.org/servlet/getForwardLinks?usr=" . $api_user . "&pwd=" . $api_pwd . "&doi=" . $doi;
 		$data = $this->getAPIContent($url);
 		$ret = array();
 		$ret["crossref_count"] = 0;
-		$ret["crossref_url"] = null;
 		$ret["crossref_list"] = null;
 		if ($data != null) {
 			$xml = simplexml_load_string($data);
@@ -78,19 +77,6 @@ class CitationsParser
 		}
 		return $ret;
 	}
-
-	private function getScopusURL($url)
-	{
-		$data = $this->getAPIContent($url);
-		$xml = simplexml_load_string($data);
-		if ($xml) {
-			$url = $xml->xpath("//*[@rel='scopus']")[0]['href'];
-			if ($url)
-				return $url;
-		}
-		return null;
-	}
-
 
 	private function getAPIContent($url, $type = "text/xml")
 	{

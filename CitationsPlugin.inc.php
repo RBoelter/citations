@@ -40,27 +40,28 @@ class CitationsPlugin extends GenericPlugin
 
 	public function citationsContent($hookName, $args)
 	{
-		$request = Application::getRequest();
+		$request = $this->getRequest();
 		$smarty =& $args[1];
 		$output =& $args[2];
 		$article = $smarty->getTemplateVars('article');
 		$pubId = $article->getStoredPubId('doi');
-
-
-		$citationsShowList = true;
-		$citationsProvider = 'all';
-		$citationsShowTotal = true;
-
+		$contextId = $request->getContext()->getId();
+		$settings = json_decode($this->getSetting($contextId, 'settings'), true);
 		if ($pubId == null)
 			$pubId = '10.5964/ejop.v8i4.555';
-		if ($pubId != null && $pubId != '') {
+		if ($pubId != null && $pubId != '' && $settings && $settings != null) {
 			$smarty->assign(array(
 				'citationsImagePath' => $request->getBaseUrl() . '/' . $this->getPluginPath() . '/images/',
 				'citationsId' => $pubId,
-				'citationsProvider' => $citationsProvider,
-				'citationsShowTotal' => $citationsShowTotal,
-				'citationsShowList' => $citationsShowList,
-				'citationsArgsList' => array('citationsId' => $pubId, 'citationsShowList' => $citationsShowList, 'citationsProvider' => $citationsProvider)
+				'citationsProvider' => $settings['provider'] != null ? $settings['provider'] : 'all',
+				'citationsShowTotal' => $settings['showTotal'] != null ? $settings['showTotal'] : false,
+				'citationsShowList' => $settings['showList'] != null ? $settings['showList'] : false,
+				'citationsMaxHeight' => $settings['maxHeight'] != null ? intval($settings['maxHeight']) : 0,
+				'citationsArgsList' => array(
+					'citationsId' => $pubId,
+					'citationsShowList' => $settings['showList'] != null ? $settings['showList'] : false,
+					'citationsProvider' => $settings['provider'] != null ? $settings['provider'] : 'all'
+				)
 			));
 			$smarty->addJavaScript(
 				'citations',
@@ -80,6 +81,63 @@ class CitationsPlugin extends GenericPlugin
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Add settings button to plugin
+	 * @param $request
+	 * @param array $verb
+	 * @return array
+	 */
+	public function getActions($request, $verb)
+	{
+		$router = $request->getRouter();
+		import('lib.pkp.classes.linkAction.request.AjaxModal');
+		return array_merge(
+			$this->getEnabled() ? array(
+				new LinkAction(
+					'settings',
+					new AjaxModal(
+						$router->url($request, null, null, 'manage', null, array('verb' => 'settings', 'plugin' => $this->getName(), 'category' => 'generic')),
+						$this->getDisplayName()
+					),
+					__('manager.plugins.settings'),
+					null
+				),
+			) : array(),
+			parent::getActions($request, $verb)
+		);
+	}
+
+	/**
+	 * Manage Settings
+	 * @param array $args
+	 * @param PKPRequest $request
+	 * @return JSONMessage
+	 */
+	public function manage($args, $request)
+	{
+		switch ($request->getUserVar('verb')) {
+			case 'settings':
+				$templateMgr = TemplateManager::getManager($request);
+				$templateMgr->assign('citationsProviderOptions', [
+					'all' => 'plugins.generic.citations.options.all',
+					'scopus' => 'plugins.generic.citations.options.scopus',
+					'crossref' => 'plugins.generic.citations.options.crossref'
+				]);
+				$this->import('CitationsSettingsForm');
+				$form = new CitationsSettingsForm($this);
+				if (!$request->getUserVar('save')) {
+					$form->initData();
+					return new JSONMessage(true, $form->fetch($request));
+				}
+				$form->readInputData();
+				if ($form->validate()) {
+					$form->execute();
+					return new JSONMessage(true);
+				}
+		}
+		return parent::manage($args, $request);
 	}
 
 }

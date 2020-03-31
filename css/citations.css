@@ -10,11 +10,17 @@
 }
 
 .badge {
-    margin-top: 10px;
-    background-color: black;
-    color: white;
-    padding: 5px;
-    border-radius: 50%;
+    display: inline-block;
+    padding: .25em .4em;
+    font-size: 75%;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: .25rem;
+    background-color: #646464;
+    color: #fff;
 }
 
 .citations-count-scopus {
@@ -24,12 +30,6 @@
 
 .citations-count img {
     max-width: 90%;
-}
-
-.citations {
-    max-height: 500px;
-    overflow-y: auto;
-    overflow-x: hidden;
 }
 
 .citations-list {
@@ -51,4 +51,34 @@
 
 .citations-table tr {
     margin: 0;
+}
+
+#citations-loader {
+    margin: auto;
+    z-index: 1;
+    width: 50px;
+    height: 50px;
+    border: 3px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 3px solid #3498db;
+    -webkit-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
+}
+
+@-webkit-keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }

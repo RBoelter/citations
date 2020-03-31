@@ -7,6 +7,7 @@ class CitationsHandler extends Handler
 {
 	public function get($args, $request)
 	{
+		$plugin = PluginRegistry::getPlugin('generic', 'citationsplugin');
 		$pubId = null;
 		if ($request->getUserVars() && sizeof($request->getUserVars()) > 0 && $request->getUserVars()['citationsId']) {
 			$pubId = $request->getUserVars()['citationsId'];
@@ -19,18 +20,20 @@ class CitationsHandler extends Handler
 		if ($pubId != null && '' != trim($pubId)) {
 			import('plugins.generic.citations.classes.CitationsParser');
 			$parser = new CitationsParser();
-			$settings = json_decode(file_get_contents("../../settings.json"));
+			$contextId = $request->getContext()->getId();
+			$settings = json_decode($plugin->getSetting($contextId, 'settings'), true);
+
 			switch ($provider) {
 				case 'scopus':
-					$ret = array_merge($ret, $parser->getScopusCitedBy($pubId, $settings->sca, $loadList));
+					$ret = array_merge($ret, $parser->getScopusCitedBy($pubId, $settings['scopusKey'], $loadList));
 					break;
 				case 'crossref':
-					$ret = array_merge($ret, $parser->getCrossrefCitedBy($pubId, $settings->cru, $settings->crp, $loadList));
+					$ret = array_merge($ret, $parser->getCrossrefCitedBy($pubId, $settings['crossrefUser'], $settings['crossrefPwd'], $loadList));
 					break;
 				case 'all':
 					$list = array();
-					$ret = array_merge($ret, $parser->getScopusCitedBy($pubId, $settings->sca, $loadList));
-					$ret = array_merge($ret, $parser->getCrossrefCitedBy($pubId, $settings->cru, $settings->crp, $loadList));
+					$ret = array_merge($ret, $parser->getScopusCitedBy($pubId, $settings['scopusKey'], $loadList));
+					$ret = array_merge($ret, $parser->getCrossrefCitedBy($pubId, $settings['crossrefUser'], $settings['crossrefPwd'], $loadList));
 					$list = array_merge($list, $ret['crossref_list']);
 					foreach ($ret['scopus_list'] as $scopus) {
 						$inList = false;
