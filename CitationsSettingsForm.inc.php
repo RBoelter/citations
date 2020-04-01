@@ -6,7 +6,6 @@ import('lib.pkp.classes.form.Form');
 class CitationsSettingsForm extends Form
 {
 	public $plugin;
-	private $sKey;
 
 	public function __construct($plugin)
 	{
@@ -25,18 +24,17 @@ class CitationsSettingsForm extends Form
 			$this->setData('citationsProvider', $data['provider']);
 			$this->setData('citationsShowList', $data['showList']);
 			$this->setData('citationsShowTotal', $data['showTotal']);
-			$this->setData('citationsScopusKeyS', $data['scopusKey']);
-			$this->setData('citationsCrossrefUserS', $data['crossrefUser']);
-			$this->setData('citationsCrossrefPwdS', $data['crossrefPwd']);
 			$this->setData('citationsMaxHeight', $data['maxHeight']);
-			$this->sKey = $data['scopusKey'];
+			$this->setData('citationsScopusSaved', ($data['scopusKey'] && $data['scopusKey'] != '') ? 'key-saved' : '');
+			$this->setData('citationsCrossrefUserSaved', ($data['crossrefUser'] && $data['crossrefUser'] != '') ? 'key-saved' : '');
+			$this->setData('citationsCrossrefPwdSaved', ($data['crossrefPwd'] && $data['crossrefPwd'] != '') ? 'key-saved' : '');
 		}
 		parent::initData();
 	}
 
 	public function readInputData()
 	{
-		$this->readUserVars(['citationsProvider', 'citationsShowList', 'citationsShowTotal', 'citationsScopusKey', 'citationsCrossrefUser', 'citationsCrossrefPwd', 'citationsScopusKeyS', 'citationsCrossrefUserS', 'citationsCrossrefPwdS', 'citationsMaxHeight']);
+		$this->readUserVars(['citationsProvider', 'citationsShowList', 'citationsShowTotal', 'citationsScopusKey', 'citationsCrossrefUser', 'citationsCrossrefPwd', 'citationsMaxHeight']);
 		parent::readInputData();
 	}
 
@@ -47,16 +45,18 @@ class CitationsSettingsForm extends Form
 		return parent::fetch($request, $template, $display);
 	}
 
-	public function execute()
+	public function execute(...$args)
 	{
+		$contextId = Application::getRequest()->getContext()->getId();
+		$settings = json_decode($this->plugin->getSetting($contextId, 'settings'), true);
 		$contextId = Application::getRequest()->getContext()->getId();
 		$data = [
 			"provider" => $this->getData('citationsProvider'),
 			"showList" => $this->getData('citationsShowList'),
 			"showTotal" => $this->getData('citationsShowTotal'),
-			"scopusKey" => ($this->getData('citationsScopusKey') && $this->getData('citationsScopusKey') != '' ? $this->getData('citationsScopusKey') : $this->getData('citationsScopusKeyS')),
-			"crossrefUser" => ($this->getData('citationsCrossrefUser') && $this->getData('citationsCrossrefUser') != '' ? $this->getData('citationsCrossrefUser') : $this->getData('citationsCrossrefUserS')),
-			"crossrefPwd" => ($this->getData('citationsCrossrefPwd') && $this->getData('citationsCrossrefPwd') != '' ? $this->getData('citationsCrossrefPwd') : $this->getData('citationsCrossrefPwdS')),
+			"scopusKey" => ($this->getData('citationsScopusKey') && $this->getData('citationsScopusKey') != '' ? $this->getData('citationsScopusKey') : $settings['scopusKey']),
+			"crossrefUser" => ($this->getData('citationsCrossrefUser') && $this->getData('citationsCrossrefUser') != '' ? $this->getData('citationsCrossrefUser') : $settings['crossrefUser']),
+			"crossrefPwd" => ($this->getData('citationsCrossrefPwd') && $this->getData('citationsCrossrefPwd') != '' ? $this->getData('citationsCrossrefPwd') : $settings['crossrefPwd']),
 			"maxHeight" => $this->getData('citationsMaxHeight')
 		];
 		$this->plugin->updateSetting($contextId, 'settings', json_encode($data));

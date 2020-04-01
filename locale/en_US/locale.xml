@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE locale SYSTEM "../../../../../lib/pkp/dtd/locale.dtd">
+
+<locale name="en_US" full_name="U.S. English">
+	<message key="plugins.generic.citations.title">Scopus/Crossref Plugin</message>
+	<message key="plugins.generic.citations.desc">This plugin shows the total number of citations and a "cited by" article list from Scopus and/or Crossref.</message>
+	<message key="plugins.generic.citations.provider">Provider</message>
+	<message key="plugins.generic.citations.provider.desc">Choose between Crossref, Scopus or both.</message>
+	<message key="plugins.generic.citations.options.all">Scopus &amp; Crossref</message>
+	<message key="plugins.generic.citations.options.scopus">Scopus</message>
+	<message key="plugins.generic.citations.options.crossref">Crossref</message>
+	<message key="plugins.generic.citations.api.desc">The API credentials are requested in the following fields. These are stored but not re-displayed for safety purposes. You do not have to reenter your credentials because the already stored credentials will be used. If credentials are stored, the corresponding input fields are marked with a blue border.</message>
+	<message key="plugins.generic.citations.scopus">Scopus API</message>
+	<message key="plugins.generic.citations.scopus.desc"><![CDATA[In order to retrieve citation statistics from Scopus you need an API key. If you don't have an API key yet, you can request one <a href="https://dev.elsevier.com/sc_apis.html" target="_blank">here</a> (free of charge)]]></message>
+	<message key="plugins.generic.citations.scopus.key">Enter here the Scopus API Key.</message>
+	<message key="plugins.generic.citations.crossref">CrossRef API</message>
+	<message key="plugins.generic.citations.crossref.desc"><![CDATA[To get access to the Crossref API you have to be a<a href="https://www.crossref.org/membership/" target="_blank">member</a> of Crossref. This is associated with <a href="https://www.crossref.org/fees/" target="_blank">fees</a>. If you are a member of Crossref, please enter your credentials here.]]></message>
+	<message key="plugins.generic.citations.crossref.name">Enter here the Crossref API username.</message>
+	<message key="plugins.generic.citations.crossref.pwd">Enter here the Crossref API password.</message>
+	<message key="plugins.generic.citations.show.total">Total number of citations</message>
+	<message key="plugins.generic.citations.show.total.desc">The total number of citations can be de-/activated with this option.</message>
+	<message key="plugins.generic.citations.show.total.check">Enable total number of citations</message>
+	<message key="plugins.generic.citations.show.list">"cited by" article listing</message>
+	<message key="plugins.generic.citations.show.list.desc">The "cited by" article listing can be de-/activated with this option</message>
+	<message key="plugins.generic.citations.show.list.check">Enable "cited by" article listing</message>
+	<message key="plugins.generic.citations.max.height">Block height</message>
+	<message key="plugins.generic.citations.max.height.desc">Enter here a maximum height of the block. If you leave the field empty or enter 0, the height is not restricted.</message>
+</locale>

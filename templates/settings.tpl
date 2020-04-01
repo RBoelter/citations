@@ -7,6 +7,11 @@
 		el.addEventListener("input", elem => el.value = (isNaN(el.value)) ? el.value.replace(elem.data, '') : el.value);
         {rdelim})
 </script>
+<style>
+	.key-saved{
+		border: 1px solid deepskyblue !important;
+	}
+</style>
 <form
 		class="pkp_form"
 		id="citationsSettings"
@@ -18,15 +23,14 @@
 	    {fbvFormSection list=true label="plugins.generic.citations.provider" description="plugins.generic.citations.provider.desc"}
 	        {fbvElement type="select" id="citationsProvider" from=$citationsProviderOptions selected=$citationsProvider size=$fbvStyles.size.SMALL}
 	    {/fbvFormSection}
-	    {fbvFormSection title="plugins.generic.citations.scopus.key" }
-	        {fbvElement type="text" id="citationsScopusKey" value=$citationsScopusKey label="plugins.generic.citations.scopus.key.desc" size=$fbvStyles.size.SMALL}
-            {fbvElement type="hidden" id="citationsScopusKeyS" value=$citationsScopusKeyS}
+	    <div id="api_description">{translate key="plugins.generic.citations.api.desc"}</div>
+	    <br/>
+	    {fbvFormSection label="plugins.generic.citations.scopus" description="plugins.generic.citations.scopus.desc"}
+	        {fbvElement type="text" id="citationsScopusKey" class=$citationsScopusSaved value=$citationsScopusKey label="plugins.generic.citations.scopus.key"}
 	    {/fbvFormSection}
-	    {fbvFormSection title="plugins.generic.citations.crossref" }
-	        {fbvElement type="text" id="citationsCrossrefUser" value=$citationsCrossrefUser label="plugins.generic.citations.crossref.name.desc" inline=true}
-            {fbvElement type="hidden" id="citationsCrossrefUserS" value=$citationsCrossrefUserS}
-            {fbvElement type="text" id="citationsCrossrefPwd" value=$citationsCrossrefPwd label="plugins.generic.citations.crossref.pwd.desc" inline=true}
-            {fbvElement type="hidden" id="citationsCrossrefPwdS" value=$citationsCrossrefPwdS}
+	    {fbvFormSection label="plugins.generic.citations.crossref" description="plugins.generic.citations.crossref.desc"}
+	        {fbvElement type="text" id="citationsCrossrefUser" class=$citationsCrossrefUserSaved value=$citationsCrossrefUser label="plugins.generic.citations.crossref.name" inline=true}
+            {fbvElement type="text" id="citationsCrossrefPwd" class=$citationsCrossrefPwdSaved value=$citationsCrossrefPwd label="plugins.generic.citations.crossref.pwd" inline=true}
 	    {/fbvFormSection}
 	    {fbvFormSection label="plugins.generic.citations.show.total" list=true description="plugins.generic.citations.show.total.desc"}
 	        {fbvElement type="checkbox" id="citationsShowTotal" value="1" checked=$citationsShowTotal label="plugins.generic.citations.show.total.check"}
@@ -35,7 +39,7 @@
             {fbvElement type="checkbox" id="citationsShowList" value="1" checked=$citationsShowList label="plugins.generic.citations.show.list.check"}
 	    {/fbvFormSection}
 	    {fbvFormSection title="plugins.generic.citations.max.height"}
-	        {fbvElement type="text" id="citationsMaxHeight" class="checkNum" value=$citationsMaxHeight label="plugins.generic.citations.max.height.desc" size=$fbvStyles.size.SMALL}
+	        {fbvElement type="text" id="citationsMaxHeight" class="checkNum" value=$citationsMaxHeight label="plugins.generic.citations.max.height.desc"}
 	    {/fbvFormSection}
     {/fbvFormArea}
     {fbvFormButtons submitText="common.save"}
