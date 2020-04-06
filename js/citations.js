@@ -5,6 +5,8 @@ const citationUrl = citationsContainer.getAttribute('data-citations-url');
 const citationProvider = citationsContainer.getAttribute('data-citations-provider');
 const citationShowTotal = citationsContainer.getAttribute('data-citations-total');
 const citationShowList = citationsContainer.getAttribute('data-citations-list');
+const showGoogle = citationsContainer.getAttribute('data-show-google');
+const showPmc = citationsContainer.getAttribute('data-show-pmc');
 
 fetch(citationUrl, {
 	method: 'GET',
@@ -26,6 +28,7 @@ function displayTotalContent(data) {
 	if (citationProvider && citationShowTotal) {
 		let crossrefTotal = document.querySelector('.citations-count-crossref');
 		let scopusTotal = document.querySelector('.citations-count-scopus');
+		let gridColumns = "1fr";
 		switch (citationProvider) {
 			case 'crossref':
 				crossrefTotal.style.display = 'block';
@@ -40,7 +43,20 @@ function displayTotalContent(data) {
 				scopusTotal.style.display = 'block';
 				crossrefTotal.querySelector('.badge').innerText = data["crossref_count"] ? data["crossref_count"] : 0;
 				scopusTotal.querySelector('.badge').innerText = data["scopus_count"] ? data["scopus_count"] : 0;
+				gridColumns += ' 1fr';
 				break;
+		}
+		if (showGoogle === "1") {
+			document.querySelector('.citations-count-google').style.display = 'block';
+			gridColumns += ' 1fr';
+		}
+		if (showPmc === "1") {
+			document.querySelector('.citations-count-pmc').style.display = 'block';
+			gridColumns += ' 1fr';
+		}
+		document.querySelector('.citations-count').style.gridTemplateColumns = gridColumns;
+		if (gridColumns.length === 3) {
+			document.querySelector('.citations-count').querySelector('img').style.maxWidth = '50%';
 		}
 	}
 }

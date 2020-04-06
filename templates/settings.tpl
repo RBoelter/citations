@@ -38,9 +38,16 @@
 	    {fbvFormSection label="plugins.generic.citations.show.list" list=true description="plugins.generic.citations.show.list.desc"}
             {fbvElement type="checkbox" id="citationsShowList" value="1" checked=$citationsShowList label="plugins.generic.citations.show.list.check"}
 	    {/fbvFormSection}
+	    {fbvFormSection label="plugins.generic.citations.show.google" list=true description="plugins.generic.citations.show.google.desc"}
+	        {fbvElement type="checkbox" id="citationsShowGoogle" value="1" checked=$citationsShowGoogle label="plugins.generic.citations.show.google.check"}
+	    {/fbvFormSection}
+	    {fbvFormSection label="plugins.generic.citations.show.pmc" list=true description="plugins.generic.citations.show.pmc.desc"}
+	        {fbvElement type="checkbox" id="citationsShowPmc" value="1" checked=$citationsShowPmc label="plugins.generic.citations.show.pmc.check"}
+	    {/fbvFormSection}
 	    {fbvFormSection title="plugins.generic.citations.max.height"}
 	        {fbvElement type="text" id="citationsMaxHeight" class="checkNum" value=$citationsMaxHeight label="plugins.generic.citations.max.height.desc"}
 	    {/fbvFormSection}
+
     {/fbvFormArea}
     {fbvFormButtons submitText="common.save"}
 </form>

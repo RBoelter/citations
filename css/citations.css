@@ -1,6 +1,6 @@
 .citations-count {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    /*grid-template-columns: 1fr 1fr 1fr 1fr;*/
     text-align: center;
     font-weight: bold;
 }
@@ -9,7 +9,7 @@
     display: none;
 }
 
-.badge {
+.citations-container .badge {
     display: inline-block;
     padding: .25em .4em;
     font-size: 75%;
@@ -23,13 +23,9 @@
     color: #fff;
 }
 
-.citations-count-scopus {
-    position: relative;
-    top: 17px;
-}
-
 .citations-count img {
-    max-width: 90%;
+    width: 90%;
+    max-width: 200px;
 }
 
 .citations-list {

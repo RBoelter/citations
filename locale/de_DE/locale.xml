@@ -25,4 +25,10 @@
 	<message key="plugins.generic.citations.show.list.check">"zitiert von" Artikelliste einschalten</message>
 	<message key="plugins.generic.citations.max.height">Höhe des Blocks</message>
 	<message key="plugins.generic.citations.max.height.desc">Tragen sie hier die maximale Höhe des blocks ein. Wenn Sie das Feld leer lassen, oder 0 eingeben, dann wird die Höhe nicht eingeschrankt.</message>
+	<message key="plugins.generic.citations.show.google">Google Scholar Link</message>
+	<message key="plugins.generic.citations.show.google.desc">Mit dieser Option kann der Link zur Google Scholar Suche de-/aktiviert werden.</message>
+	<message key="plugins.generic.citations.show.google.check">Google Scholar einschalten</message>
+	<message key="plugins.generic.citations.show.pmc">Europe PMC Link</message>
+	<message key="plugins.generic.citations.show.pmc.desc">Mit dieser Option kann der Link zur Europe PMC Suche de-/aktiviert werden.</message>
+	<message key="plugins.generic.citations.show.pmc.check">Europe PMC einschalten</message>
 </locale>

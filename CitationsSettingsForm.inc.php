@@ -23,6 +23,8 @@ class CitationsSettingsForm extends Form
 			$data = json_decode($data, true);
 			$this->setData('citationsProvider', $data['provider']);
 			$this->setData('citationsShowList', $data['showList']);
+			$this->setData('citationsShowGoogle', $data['showGoogle']);
+			$this->setData('citationsShowPmc', $data['showPmc']);
 			$this->setData('citationsShowTotal', $data['showTotal']);
 			$this->setData('citationsMaxHeight', $data['maxHeight']);
 			$this->setData('citationsScopusSaved', ($data['scopusKey'] && $data['scopusKey'] != '') ? 'key-saved' : '');
@@ -34,7 +36,7 @@ class CitationsSettingsForm extends Form
 
 	public function readInputData()
 	{
-		$this->readUserVars(['citationsProvider', 'citationsShowList', 'citationsShowTotal', 'citationsScopusKey', 'citationsCrossrefUser', 'citationsCrossrefPwd', 'citationsMaxHeight']);
+		$this->readUserVars(['citationsProvider', 'citationsShowList', 'citationsShowTotal', 'citationsScopusKey', 'citationsCrossrefUser', 'citationsCrossrefPwd', 'citationsMaxHeight', 'citationsShowGoogle', 'citationsShowPmc']);
 		parent::readInputData();
 	}
 
@@ -53,6 +55,8 @@ class CitationsSettingsForm extends Form
 		$data = [
 			"provider" => $this->getData('citationsProvider'),
 			"showList" => $this->getData('citationsShowList'),
+			"showGoogle" => $this->getData('citationsShowGoogle'),
+			"showPmc" => $this->getData('citationsShowPmc'),
 			"showTotal" => $this->getData('citationsShowTotal'),
 			"scopusKey" => ($this->getData('citationsScopusKey') && $this->getData('citationsScopusKey') != '' ? $this->getData('citationsScopusKey') : $settings['scopusKey']),
 			"crossrefUser" => ($this->getData('citationsCrossrefUser') && $this->getData('citationsCrossrefUser') != '' ? $this->getData('citationsCrossrefUser') : $settings['crossrefUser']),

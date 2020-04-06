@@ -52,6 +52,8 @@ class CitationsPlugin extends GenericPlugin
 				'citationsImagePath' => $request->getBaseUrl() . '/' . $this->getPluginPath() . '/images/',
 				'citationsId' => $pubId,
 				'citationsProvider' => $settings['provider'] != null ? $settings['provider'] : 'all',
+				'citationsShowGoogle' => $settings['showGoogle'] ? $settings['showGoogle'] : 0,
+				'citationsShowPmc' => $settings['showPmc'] ? $settings['showPmc'] : 0,
 				'citationsShowTotal' => $settings['showTotal'] != null ? $settings['showTotal'] : false,
 				'citationsShowList' => $settings['showList'] != null ? $settings['showList'] : false,
 				'citationsMaxHeight' => $settings['maxHeight'] != null ? intval($settings['maxHeight']) : 0,
