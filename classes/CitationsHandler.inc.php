@@ -22,7 +22,6 @@ class CitationsHandler extends Handler
 			$parser = new CitationsParser();
 			$contextId = $request->getContext()->getId();
 			$settings = json_decode($plugin->getSetting($contextId, 'settings'), true);
-
 			switch ($provider) {
 				case 'scopus':
 					$ret = array_merge($ret, $parser->getScopusCitedBy($pubId, $settings['scopusKey'], $loadList));
@@ -50,6 +49,9 @@ class CitationsHandler extends Handler
 					$ret['scopus_list'] = null;
 					$ret['crossref_list'] = null;
 					break;
+			}
+			if ($settings['showPmc'] && intval($settings['showPmc']) == 1) {
+				$ret = array_merge($ret, $parser->getEuropePmcCount($pubId));
 			}
 		}
 		if (sizeof($ret) > 0)

@@ -9,7 +9,7 @@
     display: none;
 }
 
-.citations-container .badge {
+.citations-container .badge_total {
     display: inline-block;
     padding: .25em .4em;
     font-size: 75%;

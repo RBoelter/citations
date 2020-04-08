@@ -32,17 +32,17 @@ function displayTotalContent(data) {
 		switch (citationProvider) {
 			case 'crossref':
 				crossrefTotal.style.display = 'block';
-				crossrefTotal.querySelector('.badge').innerText = data["crossref_count"] ? data["crossref_count"] : 0;
+				crossrefTotal.querySelector('.badge_total').innerText = data["crossref_count"] ? data["crossref_count"] : 0;
 				break;
 			case 'scopus':
 				scopusTotal.style.display = 'block';
-				scopusTotal.querySelector('.badge').innerText = data["scopus_count"] ? data["scopus_count"] : 0;
+				scopusTotal.querySelector('.badge_total').innerText = data["scopus_count"] ? data["scopus_count"] : 0;
 				break;
 			case 'all':
 				crossrefTotal.style.display = 'block';
 				scopusTotal.style.display = 'block';
-				crossrefTotal.querySelector('.badge').innerText = data["crossref_count"] ? data["crossref_count"] : 0;
-				scopusTotal.querySelector('.badge').innerText = data["scopus_count"] ? data["scopus_count"] : 0;
+				crossrefTotal.querySelector('.badge_total').innerText = data["crossref_count"] ? data["crossref_count"] : 0;
+				scopusTotal.querySelector('.badge_total').innerText = data["scopus_count"] ? data["scopus_count"] : 0;
 				gridColumns += ' 1fr';
 				break;
 		}
@@ -52,6 +52,7 @@ function displayTotalContent(data) {
 		}
 		if (showPmc === "1") {
 			document.querySelector('.citations-count-pmc').style.display = 'block';
+			document.querySelector('.citations-count-pmc').querySelector('.badge_total').innerText = data["pmc_count"] ? data["pmc_count"] : 0;
 			gridColumns += ' 1fr';
 		}
 		document.querySelector('.citations-count').style.gridTemplateColumns = gridColumns;

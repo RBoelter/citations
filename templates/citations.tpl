@@ -5,13 +5,12 @@
 	<div class="citations-count">
 		<div class="citations-count-crossref">
 			<img class="img-fluid" src="{$citationsImagePath}crossref.png" alt="Crossref"/>
-			<br/>
-			<span class="badge"> {$citationsList['crossref_count']}</span>
+			<div class="badge_total"></div>
 		</div>
 		<div class="citations-count-scopus">
 			<img src="{$citationsImagePath}scopus.png" alt="Scopus"/>
 			<br/>
-			<span class="badge">{$citationsList['scopus_count']}</span>
+			<span class="badge_total"></span>
 		</div>
 		<div class="citations-count-google">
 			<a href="https://scholar.google.com/scholar?q={$citationsId}" target="_blank" rel="noreferrer">
@@ -21,6 +20,8 @@
 		<div class="citations-count-pmc">
 			<a href="http://europepmc.org/search?scope=fulltext&query=(REF:{$citationsId})" target="_blank" rel="noreferrer">
 				<img src="{$citationsImagePath}pmc.png" alt="Europe PMC"/>
+				<br/>
+				<span class="badge_total"></span>
 			</a>
 		</div>
 	</div>

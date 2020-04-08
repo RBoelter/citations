@@ -78,6 +78,19 @@ class CitationsParser
 		return $ret;
 	}
 
+	function getEuropePmcCount($doi)
+	{
+		$ret = array();
+		$url = "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=(REF:" . $doi . ")";
+		$data = $this->getAPIContent($url, 'application/xml');
+		$ret["pmc_count"] = 0;
+		if ($data != null) {
+			$xml = simplexml_load_string($data);
+			$ret["pmc_count"] = intval($xml->{"hitCount"});
+		}
+		return $ret;
+	}
+
 	private function getAPIContent($url, $type = "text/xml")
 	{
 		$ch = curl_init();
