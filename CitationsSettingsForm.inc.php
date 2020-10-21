@@ -17,7 +17,7 @@ class CitationsSettingsForm extends Form
 
 	public function initData()
 	{
-		$contextId = Application::getRequest()->getContext()->getId();
+		$contextId = Application::get()->getRequest()->getContext()->getId();
 		$data = $this->plugin->getSetting($contextId, 'settings');
 		if ($data != null && $data != '') {
 			$data = json_decode($data, true);
@@ -49,9 +49,8 @@ class CitationsSettingsForm extends Form
 
 	public function execute(...$args)
 	{
-		$contextId = Application::getRequest()->getContext()->getId();
+		$contextId = Application::get()->getRequest()->getContext()->getId();
 		$settings = json_decode($this->plugin->getSetting($contextId, 'settings'), true);
-		$contextId = Application::getRequest()->getContext()->getId();
 		$data = [
 			"provider" => $this->getData('citationsProvider'),
 			"showList" => $this->getData('citationsShowList'),
@@ -67,7 +66,7 @@ class CitationsSettingsForm extends Form
 		import('classes.notification.NotificationManager');
 		$notificationMgr = new NotificationManager();
 		$notificationMgr->createTrivialNotification(
-			Application::getRequest()->getUser()->getId(),
+			Application::get()->getRequest()->getUser()->getId(),
 			NOTIFICATION_TYPE_SUCCESS,
 			['contents' => __('common.changesSaved')]
 		);

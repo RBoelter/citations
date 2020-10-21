@@ -25,7 +25,7 @@ class CitationsPlugin extends GenericPlugin
 	{
 		$success = parent::register($category, $path);
 		if ($success && $this->getEnabled()) {
-			$request = Application::getRequest();
+			$request = Application::get()->getRequest();
 			$templateMgr = TemplateManager::getManager($request);
 			$templateMgr->addStyleSheet(
 				'citations',
@@ -40,14 +40,14 @@ class CitationsPlugin extends GenericPlugin
 
 	public function citationsContent($hookName, $args)
 	{
-		$request = $this->getRequest();
+		$request = Application::get()->getRequest();
 		$smarty =& $args[1];
 		$output =& $args[2];
 		$article = $smarty->getTemplateVars('article');
 		$pubId = $article->getStoredPubId('doi');
 		$contextId = $request->getContext()->getId();
 		$settings = json_decode($this->getSetting($contextId, 'settings'), true);
-		if ($pubId != null && $pubId != '' && $settings && $settings != null) {
+		if ($pubId != null && $pubId != '' && $settings) {
 			$smarty->assign(array(
 				'citationsImagePath' => $request->getBaseUrl() . '/' . $this->getPluginPath() . '/images/',
 				'citationsId' => $pubId,
