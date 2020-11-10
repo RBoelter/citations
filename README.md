@@ -1,5 +1,5 @@
 # OJS Scopus/Crossref Plugin
-[![Build Status](https://travis-ci.org/RBoelter/citations.svg?branch=master)](https://travis-ci.org/RBoelter/citations)
+[![Build Status](https://travis-ci.com/RBoelter/citations.svg?branch=master)](https://travis-ci.com/RBoelter/citations)
 ![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/RBoelter/citations?include_prereleases&label=latest%20release)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/RBoelter/citations)
 ![GitHub](https://img.shields.io/github/license/RBoelter/citations)
