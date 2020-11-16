@@ -7,7 +7,7 @@ language: php
 
 branches:
     only:
-        - master
+        - main
 
 addons:
     apt:
