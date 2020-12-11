@@ -62,7 +62,7 @@ class CitationsParser
 		$ret["crossref_list"] = null;
 		$ret["crossref_list"] = [];
 		$crossref_list = array();
-		if ($data != null) {
+		if ($data != null && strpos( $data, "<crossref_result" ) == true) {
 			$xml = simplexml_load_string($data);
 			$link_list = $xml->{"query_result"}->{"body"}->{"forward_link"};
 			if ($link_list && sizeof($link_list) > 0) {
