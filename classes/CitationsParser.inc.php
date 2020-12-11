@@ -12,6 +12,7 @@ class CitationsParser
 		$ret = array();
 		$ret["scopus_count"] = 0;
 		$ret["scopus_url"] = null;
+		$ret["scopus_list"] = [];
 		$scopus_list = array();
 		if ($data != null) {
 			$xml = simplexml_load_string($data);
@@ -59,6 +60,7 @@ class CitationsParser
 		$ret = array();
 		$ret["crossref_count"] = 0;
 		$ret["crossref_list"] = null;
+		$ret["crossref_list"] = [];
 		$crossref_list = array();
 		if ($data != null) {
 			$xml = simplexml_load_string($data);
@@ -169,16 +171,18 @@ class CitationsParser
 		$author_list = "";
 		$contri_list = $item->{$type}->{"contributors"}->{"contributor"};
 		$count = 0;
-		$size = sizeof($contri_list);
-		foreach ($contri_list as $contributor) {
-			$name = $contributor->{"given_name"}." ".$contributor->{"surname"};
-			if (++$count < $size) {
-				$name .= ", ";
-			}
-			if ($contributor['first-author'] == "true") {
-				$author_list = $name.$author_list;
-			} else {
-				$author_list .= $name;
+		if (is_countable($contri_list)) {
+			$size = sizeof($contri_list);
+			foreach ($contri_list as $contributor) {
+				$name = $contributor->{"given_name"}." ".$contributor->{"surname"};
+				if (++$count < $size) {
+					$name .= ", ";
+				}
+				if ($contributor['first-author'] == "true") {
+					$author_list = $name.$author_list;
+				} else {
+					$author_list .= $name;
+				}
 			}
 		}
 		$citeItem["authors"] = $author_list;
