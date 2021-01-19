@@ -3,8 +3,8 @@
 <version>
     <application>citations</application>
     <type>plugins.generic</type>
-    <release>3.1.0.1</release>
-    <date>2020-11-10</date>
+    <release>3.1.0.2</release>
+    <date>2021-01-19</date>
     <lazy-load>1</lazy-load>
     <class>CitationsPlugin</class>
 </version>
