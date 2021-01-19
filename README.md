@@ -1,5 +1,10 @@
 # OJS Scopus/Crossref Plugin
 
+![CI Tests](https://github.com/RBoelter/citations/workflows/CI%20Tests/badge.svg?branch=stable-3_1_2)
+
+![GitHub](https://img.shields.io/github/license/RBoelter/citations)
+[![OJS-Version](https://img.shields.io/badge/pkp--ojs-3.1.x-brightgreen)](https://github.com/pkp/ojs/tree/stable-3_1_2)
+
 ## Installation
 Install the plugin via plugin gallery
 
