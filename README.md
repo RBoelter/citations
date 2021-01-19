@@ -1,10 +1,13 @@
 # OJS Scopus/Crossref Plugin
-[![Build Status](https://travis-ci.com/RBoelter/citations.svg?branch=master)](https://travis-ci.com/RBoelter/citations)
+![CI Tests](https://github.com/RBoelter/citations/workflows/CI%20Tests/badge.svg?branch=master)
+
 ![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/RBoelter/citations?include_prereleases&label=latest%20release)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/RBoelter/citations)
 ![GitHub](https://img.shields.io/github/license/RBoelter/citations)
-[![OJS-Version](https://img.shields.io/badge/pkp--ojs-3.2.1-brightgreen)](https://github.com/pkp/ojs/tree/stable-3_2_1)
+[![OJS-Version](https://img.shields.io/badge/pkp--ojs-3.2.x-brightgreen)](https://github.com/pkp/ojs/tree/master)
+[![OJS-Version](https://img.shields.io/badge/pkp--ojs-3.3.x-brightgreen)](https://github.com/pkp/ojs/tree/master)
 ![GitHub All Releases](https://img.shields.io/github/downloads/RBoelter/citations/total)
+
 ## Installation
 Install the plugin via plugin gallery
 
