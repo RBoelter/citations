@@ -94,7 +94,7 @@ jobs:
             -   name: Run Tests
                 run: |
                     cd ~/${{ matrix.pkp-application }}
-                    npx cypress run --config integrationFolder=plugins/blocks/announcementsBlock/generic/citations
+                    npx cypress run --config integrationFolder=plugins/generic/citations/cypress/tests
 
             -   name: Show log
                 if: ${{ failure() }}
