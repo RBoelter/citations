@@ -1,0 +1,103 @@
+name: CI Tests
+on:
+    push:
+        branches:
+            - stable-3_1_2
+jobs:
+    full_ci:
+        name: ${{ matrix.pkp-application }}(BRANCH=${{ matrix.pkp-branch }} ;PHP=${{ matrix.php-versions }}; DB=${{ matrix.dbs }})
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                php-versions: [ '7.3', '7.4' ]
+                dbs: [ 'pgsql', 'mysql' ]
+                pkp-application: [ 'ojs' ]
+                pkp-branch: [ 'stable-3_1_2' ]
+        services:
+            mysql:
+                image: bitnami/mysql:latest
+                env:
+                    MYSQL_ROOT_PASSWORD: root
+                    MYSQL_USER: ojs-ci
+                    MYSQL_PASSWORD: ojs-ci
+                    MYSQL_DATABASE: ojs-ci
+                    MYSQL_AUTHENTICATION_PLUGIN: mysql_native_password
+                ports:
+                    - 3306:3306
+                options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=5
+            postgres:
+                image: postgres:latest
+                env:
+                    POSTGRES_USER: ojs-ci
+                    POSTGRES_PASSWORD: ojs-ci
+                    POSTGRES_DB: ojs-ci
+                ports:
+                    - 5432:5432
+                options: --health-cmd="pg_isready" --health-interval=10s --health-timeout=5s --health-retries=5
+        env:
+            CYPRESS_BASE_URL: http://127.0.0.1:8000
+            CYPRESS_DBTYPE: ${{ matrix.dbs  == 'pgsql' && 'PostgreSQL' || 'MySQLi' }}
+            CYPRESS_DBNAME: ojs-ci
+            CYPRESS_DBUSERNAME: ojs-ci
+            CYPRESS_DBPASSWORD: ojs-ci
+            CYPRESS_DBHOST: 127.0.0.1
+            CYPRESS_FILESDIR: files
+        steps:
+            -   name: Setup PHP, extensions and composer
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: ${{ matrix.php-versions }}
+                    extensions: mbstring, pgsql, mysql, mysqli, pdo_mysql, mysqlnd
+                env:
+                    update: true
+
+            -   name: Install PKP Application
+                run: |
+                    git clone -b ${{ matrix.pkp-branch }} https://github.com/pkp/${{ matrix.pkp-application }} ~/${{ matrix.pkp-application }}
+                    cd ~/${{ matrix.pkp-application }}
+                    git submodule update --init --recursive
+
+            -   name: Prepare Tests
+                run: |
+                    cd ~/${{ matrix.pkp-application }}
+                    cp config.TEMPLATE.inc.php config.inc.php
+                    sed -i -e "s/enable_cdn = On/enable_cdn = Off/" config.inc.php
+                    mkdir --parents files
+
+            -   name: Install Composer Dependencies
+                run: |
+                    cd ~/${{ matrix.pkp-application }}
+                    lib/pkp/tools/travis/install-composer-dependencies.sh
+                    npm i g -npm && npm install && npm run build
+
+            -   name: Checkout Plugin
+                uses: actions/checkout@v2
+
+            # change Plugin Path here!
+            -   name: Link Plugin Folder
+                run: |
+                    cd ${{ github.workspace }}
+                    ln -s ${{ github.workspace }} ~/${{ matrix.pkp-application }}/plugins/generic/citations
+
+            -   name: Run Server
+                run: |
+                    cd ~/${{ matrix.pkp-application }}
+                    php -S 127.0.0.1:8000 -t . >& access.log &
+
+            -   name: Create Content (${{ matrix.dbs }})
+                run: |
+                    cd ~/${{ matrix.pkp-application }}
+                    npx cypress run --spec "cypress/tests/data/10-Installation.spec.js,cypress/tests/data/20-CreateContext.spec.js"
+
+            # change path to cypress tests files here!
+            -   name: Run Tests
+                run: |
+                    cd ~/${{ matrix.pkp-application }}
+                    npx cypress run --config integrationFolder=plugins/generic/citations/cypress/tests
+
+            -   name: Show log
+                if: ${{ failure() }}
+                run: |
+                    cd ~/${{ matrix.pkp-application }}
+                    cat access.log
