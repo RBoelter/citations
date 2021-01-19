@@ -2,9 +2,8 @@
 describe('Scopus/Crossref Plugin tests', function () {
 
 	it('Disable Scopus/Crossref Plugin', function () {
-		cy.login(Cypress.env("ojs_username"), Cypress.env("ojs_password"), Cypress.env("context"));
-		cy.get('ul[id="navigationPrimary"] a:contains("Settings")').click();
-		cy.get('ul[id="navigationPrimary"] a:contains("Website")').click();
+		cy.login('admin', 'admin', 'publicknowledge');
+		cy.get('nav[class="app__nav"] a:contains("Website")').click();
 		cy.get('button[id="plugins-button"]').click();
 		// disable plugin if enabled
 		cy.get('input[id^="select-cell-citationsplugin-enabled"]')
@@ -18,9 +17,8 @@ describe('Scopus/Crossref Plugin tests', function () {
 	});
 
 	it('Enable Scopus/Crossref Plugin', function () {
-		cy.login(Cypress.env("ojs_username"), Cypress.env("ojs_password"), Cypress.env("context"));
-		cy.get('ul[id="navigationPrimary"] a:contains("Settings")').click();
-		cy.get('ul[id="navigationPrimary"] a:contains("Website")').click();
+		cy.login('admin', 'admin', 'publicknowledge');
+		cy.get('nav[class="app__nav"] a:contains("Website")').click();
 		cy.get('button[id="plugins-button"]').click();
 		// Find and enable the plugin
 		cy.get('input[id^="select-cell-citationsplugin-enabled"]').click();
