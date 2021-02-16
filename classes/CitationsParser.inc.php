@@ -1,6 +1,5 @@
 <?php
 
-use GuzzleHttp\Exception\GuzzleException;
 
 class CitationsParser
 {
