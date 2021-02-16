@@ -2,10 +2,10 @@ name: CI Tests
 on:
     push:
         branches:
-            - master
+            - stable-3_2_0
     pull_request:
         branches:
-            - master
+            - stable-3_2_0
     schedule:
         -   cron: '* 1 1 * *'
 
