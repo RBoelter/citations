@@ -105,27 +105,34 @@ class CitationsParser
 
 	private function getAPIContent($url, $type = "text/xml")
 	{
-		$data = null;
-		$httpClient = Application::get()->getHttpClient();
-		try {
-			$response = $httpClient->request(
-				'GET',
-				$url,
-				[
-					'headers' => [
-						'Accept' => $type,
-						'Content-Type' => $type,
-						'Cache-Control' => 'no-cache',
-					],
-				]
-			);
-			if ($response->getStatusCode() == 200) {
-				$data = $response->getBody()->getContents();
-			}
-		} catch (GuzzleException $e) {
+		$ch = curl_init();
+		curl_setopt_array(
+			$ch,
+			array(
+				CURLOPT_URL => $url,
+				CURLOPT_RETURNTRANSFER => true,
+				CURLOPT_ENCODING => "",
+				CURLOPT_MAXREDIRS => 10,
+				CURLOPT_TIMEOUT => 30,
+				CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+				CURLOPT_CUSTOMREQUEST => "GET",
+				CURLOPT_HTTPHEADER => array(
+					"accept: ".$type,
+					"cache-control: no-cache",
+					"content-type: ".$type,
+				),
+			)
+		);
+		if (curl_error($ch)) {
+			return null;
 		}
-
-		return $data;
+		$data = curl_exec($ch);
+		curl_close($ch);
+		if ($data) {
+			return $data;
+		} else {
+			return null;
+		}
 	}
 
 	/**
