@@ -13,6 +13,13 @@ Install the plugin via plugin gallery
 ## Settings
 Go to the plugin settings and fill in the required fields:
 
+---
+### IMPORTANT NOTE
+
+***You must [contact Crossref](https://www.crossref.org/contact) to ask for the Cited-by service to be enabled for your prefix(es), if you want to use Crossref within this Plugin!***
+
+---
+
 ![Settings](https://user-images.githubusercontent.com/7657717/78779317-0a6d8f00-799d-11ea-8ba3-25ea1c62176d.jpg "Settings")
 
 ## Article Details

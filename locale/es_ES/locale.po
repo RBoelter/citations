@@ -48,7 +48,7 @@ msgid "plugins.generic.citations.crossref"
 msgstr "CrossRef API"
 
 msgid "plugins.generic.citations.crossref.desc"
-msgstr "Para tener acceso a Crossref API, debe ser <a href=\"https://www.crossref.org/membership/\" target=\"_blank\">miembro</a> de Crossref. <a href=\"https://www.crossref.org/fees/\" target=\"_blank\">Tarifas</a>. Si eres miembro de Crossref, por favor, introduzca sus credenciales aquí."
+msgstr "Para tener acceso a Crossref API, debe ser <a href=\"https://www.crossref.org/membership/\" target=\"_blank\">miembro</a> de Crossref. <a href=\"https://www.crossref.org/fees/\" target=\"_blank\">Tarifas</a>. Si eres miembro de Crossref, por favor, introduzca sus credenciales aquí. <br /><strong>You must <a href=\"https://www.crossref.org/contact\" target=\"_blank\">contact Crossref</a> to ask for the Cited-by service to be enabled for your prefix(es).</strong>"
 
 msgid "plugins.generic.citations.crossref.name"
 msgstr "Introduzca usuario/a de Crossref API."
