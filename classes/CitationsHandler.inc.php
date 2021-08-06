@@ -33,17 +33,22 @@ class CitationsHandler extends Handler
 					$list = array();
 					$ret = array_merge($ret, $parser->getScopusCitedBy($pubId, $settings['scopusKey'], $loadList));
 					$ret = array_merge($ret, $parser->getCrossrefCitedBy($pubId, $settings['crossrefUser'], $settings['crossrefPwd'], $loadList));
-					$list = array_merge($list, $ret['crossref_list']);
-					foreach ($ret['scopus_list'] as $scopus) {
-						$inList = false;
-						foreach ($list as $itm) {
-							if (trim($itm['doi']) == trim($scopus['doi'])) {
-								$inList = true;
-								break;
+					if (key_exists('crossref_list', $ret)) {
+						$list = array_merge($list, $ret['crossref_list']);
+					}
+					if (key_exists('scopus_list', $ret)) {
+						foreach ($ret['scopus_list'] as $scopus) {
+							$inList = false;
+							foreach ($list as $itm) {
+								if (trim($itm['doi']) == trim($scopus['doi'])) {
+									$inList = true;
+									break;
+								}
+							}
+							if (!$inList) {
+								array_push($list, $scopus);
 							}
 						}
-						if (!$inList)
-							array_push($list, $scopus);
 					}
 					$ret['all_list'] = $list;
 					$ret['scopus_list'] = null;
@@ -54,10 +59,11 @@ class CitationsHandler extends Handler
 				$ret = array_merge($ret, $parser->getEuropePmcCount($pubId));
 			}
 		}
-		if (sizeof($ret) > 0)
+		if (sizeof($ret) > 0) {
 			return new JSONMessage(true, $ret);
-		else
+		} else {
 			return new JSONMessage(false);
+		}
 	}
 }
 
