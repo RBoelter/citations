@@ -1,0 +1,102 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2021-08-13T12:30:27+00:00\n"
+"PO-Revision-Date: 2021-08-13T12:30:27+00:00\n"
+"Language: \n"
+
+msgid "plugins.generic.citations.title"
+msgstr "Plugin Scopus/CrossRef" 
+
+msgid "plugins.generic.citations.desc"
+msgstr "Esse plugin exibe o número total de citações e uma lista de artigos que o citam, obtida da Scopus e/ou CrossRef."
+
+msgid "plugins.generic.citations.provider"
+msgstr "Fornecedor"
+
+msgid "plugins.generic.citations.provider.desc"
+msgstr "Escolha entre CrossRef, Scopus ou ambos."
+
+msgid "plugins.generic.citations.options.all"
+msgstr "Scopus e CrossRef"
+
+msgid "plugins.generic.citations.options.scopus"
+msgstr "Scopus"
+
+msgid "plugins.generic.citations.options.crossref"
+msgstr "CrossRef"
+
+msgid "plugins.generic.citations.api.desc"
+msgstr "As credenciais da API são solicitadas nos campos a seguir. Elas são armazenadas, mas não são exibidas novamente para fins de segurança. Você não precisa inserir suas credenciais novamente porque as credenciais já armazenadas serão usadas. Se as credenciais forem armazenadas, os campos de entrada correspondentes serão marcados com uma borda azul."
+
+msgid "plugins.generic.citations.scopus"
+msgstr "API da Scopus"
+
+msgid "plugins.generic.citations.scopus.desc"
+msgstr "Para recuperar as estatísticas das citações da Scopus você precisa de uma chave da API. Se você não tem uma chave da API, você pode solicitar uma <a href=\"https://dev.elsevier.com/sc_apis.html\" target=\"_blank\">aqui</a> (isento de custos)"
+
+msgid "plugins.generic.citations.scopus.key"
+msgstr "Insira aqui a sua chave da API da Scopus"
+
+msgid "plugins.generic.citations.crossref"
+msgstr "API da CrossRef"
+
+msgid "plugins.generic.citations.crossref.desc"
+msgstr ""
+"Para ter acesso à API da CrossRef, você deve ser um <a href=\"https://www.crossref.org/membership/\" target=\"_blank\">membro</a> da CrossRef. Isto está associado a <a href=\"https://www.crossref.org/fees/\" target=\"_blank\">taxas</a>."
+"<br /> Se você é um membro do CrossHef, por favor insira suas credenciais aqui."
+"<br /><strong> Você deve <a href=\"https://www.crossref.org/contact\" target=\"_blank\">contatar a CrossRef</a> para solicitar que o serviço \"Citado por\" seja habilitado para o(s) seu(s) prefixo(s).</strong>"
+
+msgid "plugins.generic.citations.crossref.name"
+msgstr "Digite aqui o nome do usuário da API da CrossRef"
+
+msgid "plugins.generic.citations.crossref.pwd"
+msgstr "Digite aqui a senha da API da CrossRef"
+
+msgid "plugins.generic.citations.show.total"
+msgstr "Numero total de citações"
+
+msgid "plugins.generic.citations.show.total.desc"
+msgstr "O numero total de citações pode ser ativada/desativada com esta opção"
+
+msgid "plugins.generic.citations.show.total.check"
+msgstr "Habilitar o número total de citações"
+
+msgid "plugins.generic.citations.show.list"
+msgstr "Lista de artigos com citação"
+
+msgid "plugins.generic.citations.show.list.desc"
+msgstr "A listagem de artigos que citam o artigo em questão pode ser ativada/desativada com esta opção"
+
+msgid "plugins.generic.citations.show.list.check"
+msgstr "Habilitar listagem de artigos com citação"
+
+msgid "plugins.generic.citations.max.height"
+msgstr "Altura do bloco"
+
+msgid "plugins.generic.citations.max.height.desc"
+msgstr "Digite aqui a altura máxima do bloco. Se você deixar o campo vazio ou inserir 0, a altura não será restringida"
+
+msgid "plugins.generic.citations.show.google"
+msgstr "Google Acadêmico"
+
+msgid "plugins.generic.citations.show.google.desc"
+msgstr "O link para a pesquisa do Google Acadêmico pode ser ativado/desativado com esta opção"
+
+msgid "plugins.generic.citations.show.google.check"
+msgstr "Habilitar Google Acadêmico"
+
+msgid "plugins.generic.citations.show.pmc"
+msgstr "Europe PMC"
+
+msgid "plugins.generic.citations.show.pmc.desc"
+msgstr "O link para a busca do Europe PMC pode ser ativado/desativado com esta opção"
+
+msgid "plugins.generic.citations.show.pmc.check"
+msgstr "Habilitar Europe PMC"
