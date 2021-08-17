@@ -40,19 +40,16 @@ class CitationsPlugin extends GenericPlugin
 
 	private function getPubId($smarty) {
 		$application = Application::getName();
-		$pubId = null;
 		switch($application){
 			case 'ojs2':
-				$article = $smarty->getTemplateVars('article');
-				$pubId = $article->getStoredPubId('doi');
+				$submission = $smarty->getTemplateVars('article');
 				break;
 			case 'ops':
-				$preprint = $smarty->getTemplateVars('preprint');
-				$pubId = $preprint->getStoredPubId('doi');
+				$submission = $smarty->getTemplateVars('preprint');
 				break;
 		}
 
-		return $pubId;
+		return $submission->getStoredPubId('doi');
 	}
 
 	public function citationsContent($hookName, $args)
