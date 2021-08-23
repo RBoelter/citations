@@ -32,19 +32,32 @@ class CitationsPlugin extends GenericPlugin
 				$request->getBaseUrl() . '/' . $this->getPluginPath() . '/css/citations.css'
 			);
 			HookRegistry::register('Templates::Article::Details', array($this, 'citationsContent'));
+			HookRegistry::register('Templates::Preprint::Details', array($this, 'citationsContent'));
 			HookRegistry::register('LoadHandler', array($this, 'setPageHandler'));
 		}
 		return $success;
 	}
 
+	private function getPubId($smarty) {
+		$application = Application::getName();
+		switch($application){
+			case 'ojs2':
+				$submission = $smarty->getTemplateVars('article');
+				break;
+			case 'ops':
+				$submission = $smarty->getTemplateVars('preprint');
+				break;
+		}
+
+		return $submission->getStoredPubId('doi');
+	}
 
 	public function citationsContent($hookName, $args)
 	{
 		$request = Application::get()->getRequest();
 		$smarty =& $args[1];
 		$output =& $args[2];
-		$article = $smarty->getTemplateVars('article');
-		$pubId = $article->getStoredPubId('doi');
+		$pubId = $this->getPubId($smarty);
 		$contextId = $request->getContext()->getId();
 		$settings = json_decode($this->getSetting($contextId, 'settings'), true);
 		if ($pubId != null && $pubId != '' && $settings) {
