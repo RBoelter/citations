@@ -75,7 +75,7 @@ jobs:
                 run: |
                     cd ~/${{ matrix.pkp-application }}
                     lib/pkp/tools/travis/install-composer-dependencies.sh
-                    npm i g -npm && npm install && npm run build
+                    npm i g -npm && npm i @vue/cli-service && npm install && npm run build
 
             -   name: Checkout Plugin
                 uses: actions/checkout@v2
