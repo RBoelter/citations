@@ -18,7 +18,7 @@
 			</a>
 		</div>
 		<div class="citations-count-pmc">
-			<a href="http://europepmc.org/search?scope=fulltext&query=(REF:{$citationsId})" target="_blank" rel="noreferrer">
+			<a href="http://europepmc.org/search?scope=fulltext&query=(REF:&quot;{$citationsId}&quot;)" target="_blank" rel="noreferrer">
 				<img src="{$citationsImagePath}pmc.png" alt="Europe PMC"/>
 				<br/>
 				<span class="badge_total"></span>
