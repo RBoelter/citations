@@ -92,7 +92,7 @@ class CitationsParser
 	function getEuropePmcCount($doi)
 	{
 		$ret = array();
-		$url = "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=(REF:".$doi.")";
+		$url = "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=(REF:\"".$doi."\")";
 		$data = $this->getAPIContent($url, 'application/xml');
 		$ret["pmc_count"] = 0;
 		if ($data != null) {
