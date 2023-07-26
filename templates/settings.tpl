@@ -19,7 +19,7 @@
 		action="{url router=$smarty.const.ROUTE_COMPONENT op="manage" category="generic" plugin=$pluginName verb="settings" save=true}"
 >
     {csrf}
-    {fbvFormArea}
+    {fbvFormArea id="citationsSettings"}
 	    {fbvFormSection list=true label="plugins.generic.citations.provider" description="plugins.generic.citations.provider.desc"}
 	        {fbvElement type="select" id="citationsProvider" from=$citationsProviderOptions selected=$citationsProvider size=$fbvStyles.size.SMALL}
 	    {/fbvFormSection}
