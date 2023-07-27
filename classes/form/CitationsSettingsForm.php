@@ -1,21 +1,38 @@
 <?php
 
-import('lib.pkp.classes.form.Form');
+namespace APP\plugins\generic\citations\classes\form;
 
+use APP\core\Application;
+use APP\notification\NotificationManager;
+use APP\template\TemplateManager;
+use PKP\form\Form;
+use PKP\form\validation\FormValidatorCSRF;
+use PKP\form\validation\FormValidatorPost;
+use PKP\notification\PKPNotification;
 
 class CitationsSettingsForm extends Form
 {
     public $plugin;
 
-    public function __construct($plugin)
+    public $contextId;
+
+    /**
+     * Constructor.
+     * @copydoc Form::__construct()
+     */
+    public function __construct($plugin, $contextId)
     {
         parent::__construct($plugin->getTemplateResource('settings.tpl'));
         $this->plugin = $plugin;
+        $this->contextId = $contextId;
         $this->addCheck(new FormValidatorPost($this));
         $this->addCheck(new FormValidatorCSRF($this));
     }
 
-    public function initData()
+    /**
+     * @copydoc Form::initData()
+     */
+    public function initData(): void
     {
         $contextId = Application::get()->getRequest()->getContext()->getId();
         $data = $this->plugin->getSetting($contextId, 'settings');
@@ -27,6 +44,9 @@ class CitationsSettingsForm extends Form
             $this->setData('citationsShowPmc', $data['showPmc']);
             $this->setData('citationsShowTotal', $data['showTotal']);
             $this->setData('citationsMaxHeight', $data['maxHeight']);
+            $this->setData('citationsScopusKey', $data['scopusKey']);
+            $this->setData('citationsCrossrefUser', $data['crossrefUser']);
+            $this->setData('citationsCrossrefPwd', $data['crossrefPwd']);
             $this->setData('citationsScopusSaved', ($data['scopusKey'] && $data['scopusKey'] != '') ? 'key-saved' : '');
             $this->setData(
                 'citationsCrossrefUserSaved',
@@ -40,7 +60,10 @@ class CitationsSettingsForm extends Form
         parent::initData();
     }
 
-    public function readInputData()
+    /**
+     * @copydoc Form::readInputData()
+     */
+    public function readInputData(): void
     {
         $this->readUserVars(
             [
@@ -57,42 +80,40 @@ class CitationsSettingsForm extends Form
         parent::readInputData();
     }
 
-    public function fetch($request, $template = null, $display = false)
+    /**
+     * @copydoc Form::fetch()
+     */
+    public function fetch($request, $template = null, $display = false): ?string
     {
         $templateMgr = TemplateManager::getManager($request);
         $templateMgr->assign('pluginName', $this->plugin->getName());
         return parent::fetch($request, $template, $display);
     }
 
+    /**
+     * @copydoc Form::execute()
+     */
     public function execute(...$args)
     {
         $contextId = Application::get()->getRequest()->getContext()->getId();
-        $settings = json_decode($this->plugin->getSetting($contextId, 'settings'), true);
         $data = [
             "provider" => $this->getData('citationsProvider'),
             "showList" => $this->getData('citationsShowList'),
             "showGoogle" => $this->getData('citationsShowGoogle'),
             "showPmc" => $this->getData('citationsShowPmc'),
             "showTotal" => $this->getData('citationsShowTotal'),
-            "scopusKey" => ($this->getData('citationsScopusKey') && $this->getData('citationsScopusKey') != ''
-                ? $this->getData('citationsScopusKey')
-                : $settings['scopusKey']),
-            "crossrefUser" => ($this->getData('citationsCrossrefUser') && $this->getData('citationsCrossrefUser') != ''
-                ? $this->getData('citationsCrossrefUser')
-                : $settings['crossrefUser']),
-            "crossrefPwd" => ($this->getData('citationsCrossrefPwd') && $this->getData('citationsCrossrefPwd') != ''
-                ? $this->getData('citationsCrossrefPwd')
-                : $settings['crossrefPwd']),
+            "scopusKey" => $this->getData('citationsScopusKey'),
+            "crossrefUser" => $this->getData('citationsCrossrefUser'),
+            "crossrefPwd" => $this->getData('citationsCrossrefPwd'),
             "maxHeight" => $this->getData('citationsMaxHeight')
         ];
         $this->plugin->updateSetting($contextId, 'settings', json_encode($data));
-        import('classes.notification.NotificationManager');
         $notificationMgr = new NotificationManager();
         $notificationMgr->createTrivialNotification(
             Application::get()->getRequest()->getUser()->getId(),
-            NOTIFICATION_TYPE_SUCCESS,
+            PKPNotification::NOTIFICATION_TYPE_SUCCESS,
             ['contents' => __('common.changesSaved')]
         );
-        return parent::execute();
+        return parent::execute(...$args);
     }
 }

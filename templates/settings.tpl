@@ -7,11 +7,6 @@
 		el.addEventListener("input", elem => el.value = (isNaN(el.value)) ? el.value.replace(elem.data, '') : el.value);
         {rdelim})
 </script>
-<style>
-	.key-saved{
-		border: 1px solid deepskyblue !important;
-	}
-</style>
 <form
 		class="pkp_form"
 		id="citationsSettings"
@@ -26,11 +21,11 @@
 	    <div id="api_description">{translate key="plugins.generic.citations.api.desc"}</div>
 	    <br/>
 	    {fbvFormSection label="plugins.generic.citations.scopus" description="plugins.generic.citations.scopus.desc"}
-	        {fbvElement type="text" id="citationsScopusKey" class=$citationsScopusSaved value=$citationsScopusKey label="plugins.generic.citations.scopus.key"}
+	        {fbvElement type="text" password="true" id="citationsScopusKey" class=$citationsScopusSaved value=$citationsScopusKey label="plugins.generic.citations.scopus.key"}
 	    {/fbvFormSection}
 	    {fbvFormSection label="plugins.generic.citations.crossref" description="plugins.generic.citations.crossref.desc"}
-	        {fbvElement type="text" id="citationsCrossrefUser" class=$citationsCrossrefUserSaved value=$citationsCrossrefUser label="plugins.generic.citations.crossref.name" inline=true}
-            {fbvElement type="text" id="citationsCrossrefPwd" class=$citationsCrossrefPwdSaved value=$citationsCrossrefPwd label="plugins.generic.citations.crossref.pwd" inline=true}
+	        {fbvElement type="text" password="true" id="citationsCrossrefUser" class=$citationsCrossrefUserSaved value=$citationsCrossrefUser label="plugins.generic.citations.crossref.name" inline=true}
+            {fbvElement type="text" password="true" id="citationsCrossrefPwd" class=$citationsCrossrefPwdSaved value=$citationsCrossrefPwd label="plugins.generic.citations.crossref.pwd" inline=true}
 	    {/fbvFormSection}
 	    {fbvFormSection label="plugins.generic.citations.show.total" list=true description="plugins.generic.citations.show.total.desc"}
 	        {fbvElement type="checkbox" id="citationsShowTotal" value="1" checked=$citationsShowTotal label="plugins.generic.citations.show.total.check"}
@@ -47,7 +42,6 @@
 	    {fbvFormSection title="plugins.generic.citations.max.height"}
 	        {fbvElement type="text" id="citationsMaxHeight" class="checkNum" value=$citationsMaxHeight label="plugins.generic.citations.max.height.desc"}
 	    {/fbvFormSection}
-
     {/fbvFormArea}
     {fbvFormButtons submitText="common.save"}
 </form>
