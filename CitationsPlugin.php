@@ -1,18 +1,9 @@
 <?php
 
-/**
- * @file plugins/generic/citations/CitationsPlugin.inc.php
- *
- * @class CitationsPlugin
- *
- * @ingroup plugins_generic_citations
- *
- * @brief Citations plugin class
- */
-
 namespace APP\plugins\generic\citations;
 
 use APP\core\Application;
+use APP\plugins\generic\citations\classes\CitationsHandler;
 use APP\plugins\generic\citations\classes\form\CitationsSettingsForm;
 
 use APP\template\TemplateManager;
@@ -85,17 +76,13 @@ class CitationsPlugin extends GenericPlugin
                 'citationsShowTotal' => $settings['showTotal'] ?: false,
                 'citationsShowList' => $settings['showList'] ?: false,
                 'citationsMaxHeight' => $settings['maxHeight'] ?: 0,
-                'citationsArgsList' => array(
-                    'citationsId' => $pubId,
-                    'citationsShowList' => $settings['showList'] ?: false,
-                    'citationsProvider' => $settings['provider'] ?: 'all'
-                )
+                'citationsArgsList' => ['doi' => $pubId]
             ));
             $smarty->addJavaScript(
                 'citations',
                 $request->getBaseUrl() . '/' . $this->getPluginPath() . '/js/citations.js'
             );
-            $args[2] .= & $smarty->fetch($this->getTemplateResource('citations.tpl'));
+            $args[2] .= $smarty->fetch($this->getTemplateResource('citations.tpl'));
         }
     }
 
@@ -104,8 +91,7 @@ class CitationsPlugin extends GenericPlugin
     {
         $page = $params[0];
         if ($this->getEnabled() && $page === 'citations') {
-            $this->import('classes/CitationsHandler');
-            define('HANDLER_CLASS', 'CitationsHandler');
+            define('HANDLER_CLASS', CitationsHandler::class);
             return true;
         }
         return false;

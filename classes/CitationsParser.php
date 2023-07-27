@@ -2,22 +2,46 @@
 
 namespace APP\plugins\generic\citations\classes;
 
+use APP\core\Application;
 use GuzzleHttp\Exception\GuzzleException;
+use SimpleXMLElement;
 
 class CitationsParser
 {
-    public function getScopusCitedBy($doi, $apiKey, $loadList): array
+    private const SCOPUS_API_URL = 'https://api.elsevier.com/content/search/scopus';
+    private const SCOPUS_FIELDS = '&field=eid,citedby-count';
+    private const SCOPUS_ACCEPT = "&httpAccept=application/json";
+
+    public function getScopusCitedBy($doi, $settings): array
     {
+
+        $apiKey = $settings['scopusKey'] ?? null;
         if ($apiKey == null || $apiKey == '' || $doi == null || $doi == '') {
             return array();
         }
-        $url = "https://api.elsevier.com/content/search/scopus?query=DOI(" . $doi . ")&field=eid,citedby-count&apiKey=" . $apiKey;
-        $data = $this->getAPIContent($url);
+        $doi = "10.1177/09636625221100686"; //TODO: remove this line
+        $doi = urlencode('("' . $doi . '")');
+        $url = self::SCOPUS_API_URL . "?query=DOI" . $doi . "&apiKey=" . $apiKey . self::SCOPUS_FIELDS . self::SCOPUS_ACCEPT;
+        $data = json_decode($this->getAPIContent($url), true);
+        $count = !empty($data['search-results']['entry'][0]['citedby-count'])
+            ? $data['search-results']['entry'][0]['citedby-count']
+            : 0;
+        $eid = !empty($data['search-results']['entry'][0]['eid'])
+            ? $data['search-results']['entry'][0]['eid']
+            : null;
+        if(0 !== $count && null !== $eid) {
+            $citationsUrl = self::SCOPUS_API_URL . "?query=REF(" . $eid . ")&apiKey=" . $apiKey . self::SCOPUS_ACCEPT;
+            $citations = json_decode($this->getAPIContent($citationsUrl), true);
+            dump($citations);
+            // TODO: parse citations
+        }
+
+
         $ret = array();
         $ret["scopus_count"] = 0;
         $ret["scopus_url"] = null;
         $scopus_list = array();
-        if ($data != null) {
+        /*if ($data != null) {
             $xml = simplexml_load_string($data);
             if ($xml) {
                 $ns = $xml->getNamespaces(true);
@@ -46,7 +70,7 @@ class CitationsParser
                     }
                 }
             }
-        }
+        }*/
         $ret["scopus_list"] = $scopus_list;
 
         return $ret;
@@ -90,7 +114,7 @@ class CitationsParser
         return $ret;
     }
 
-    function getEuropePmcCount($doi)
+    public function getEuropePmcCount($doi): array
     {
         $ret = array();
         $url = "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=(REF:\"" . $doi . "\")";
@@ -104,7 +128,7 @@ class CitationsParser
         return $ret;
     }
 
-    private function getAPIContent($url, $type = "text/xml")
+    private function getAPIContent($url, $type = "text/xml"): ?string
     {
         $data = null;
         $httpClient = Application::get()->getHttpClient();
