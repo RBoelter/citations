@@ -1,6 +1,5 @@
 const loader = document.querySelector('#citations-loader');
 const pluginContainer = document.querySelector('#citation-plugin');
-
 const providerList = ['crossref', 'scopus', 'europepmc', 'google'];
 
 if (pluginContainer) {
@@ -87,7 +86,6 @@ function createListElement(item) {
     }
     if (item.hasOwnProperty('volume') && item.volume !== '') {
         prototype.querySelector('.cite-info').innerHTML += ', ' + item.volume;
-
     }
     if (item.hasOwnProperty('issue') && item.issue !== '') {
         prototype.querySelector('.cite-info').innerHTML += '(' + item.issue + ')';
