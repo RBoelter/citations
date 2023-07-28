@@ -9,6 +9,11 @@ use Monolog\Logger;
 
 class CitationsHttpClient
 {
+    /** Get data from url
+     * @param string $url url to get data from
+     * @param string $type Response type
+     * @return string Data from url
+     */
     public static function get(string $url, string $type = "text/xml"): string
     {
         $data = '';

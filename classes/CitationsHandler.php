@@ -39,6 +39,9 @@ class CitationsHandler extends Handler
             $europePmcProcessor = new EuropePmcProcessor();
             $result['europepmc'] = $europePmcProcessor->process($doi, $settings);
         }
+        if (!empty($settings['showGoogle'])) {
+            $result['google'] = $settings['showGoogle'];
+        }
         if (!empty($result['crossref']['citations']) && !empty($result['scopus']['citations'])) {
             $result['scopus']['citations'] = $this->removeDoubletsFromScopus($result['crossref']['citations'], $result['scopus']['citations']);
         }

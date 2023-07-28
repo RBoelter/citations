@@ -57,7 +57,7 @@ class ScopusProcessor implements CitationsProcessorInterface
             'issue' => $citation['prism:issueIdentifier'] ?? '',
             'pages' => $citation['prism:pageRange'] ?? '',
             'type' => $citation['subtypeDescription'] ?? '',
-            'source' => 'Scopus' ?? '',
+            'source' => 'scopus' ?? '',
         ];
     }
 

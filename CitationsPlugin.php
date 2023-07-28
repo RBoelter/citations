@@ -5,7 +5,6 @@ namespace APP\plugins\generic\citations;
 use APP\core\Application;
 use APP\plugins\generic\citations\classes\CitationsHandler;
 use APP\plugins\generic\citations\classes\form\CitationsSettingsForm;
-
 use APP\template\TemplateManager;
 use Exception;
 use PKP\core\JSONMessage;
@@ -64,24 +63,17 @@ class CitationsPlugin extends GenericPlugin
         $request = Application::get()->getRequest();
         $smarty =& $args[1];
         $pubId = $this->getPubId($smarty);
+        //$pubId = '10.1177/09636625221100686';
         $contextId = $request->getContext()->getId();
         $settings = json_decode($this->getSetting($contextId, 'settings'), true);
-        if ($pubId != null && $pubId != '' && $settings) {
+        if (!empty($pubId) && !empty($settings)) {
             $smarty->assign(array(
-                'citationsImagePath' => $request->getBaseUrl() . '/' . $this->getPluginPath() . '/images/',
-                'citationsId' => $pubId,
-                'citationsProvider' => $settings['provider'] ?: 'all',
-                'citationsShowGoogle' => $settings['showGoogle'] ?: 0,
-                'citationsShowPmc' => $settings['showPmc'] ?: 0,
-                'citationsShowTotal' => $settings['showTotal'] ?: false,
-                'citationsShowList' => $settings['showList'] ?: false,
-                'citationsMaxHeight' => $settings['maxHeight'] ?: 0,
-                'citationsArgsList' => ['doi' => $pubId]
+                'imagePath' => $request->getBaseUrl() . '/' . $this->getPluginPath() . '/images/',
+                'urlArgs' => ['doi' => $pubId],
+                'showGoogle' => $settings['showGoogle'] ?: 0,
+                'maxHeight' => $settings['maxHeight'] ?: 300
             ));
-            $smarty->addJavaScript(
-                'citations',
-                $request->getBaseUrl() . '/' . $this->getPluginPath() . '/js/citations.js'
-            );
+            $smarty->addJavaScript('citations', $request->getBaseUrl() . '/' . $this->getPluginPath() . '/js/citations.js');
             $args[2] .= $smarty->fetch($this->getTemplateResource('citations.tpl'));
         }
     }
@@ -166,13 +158,12 @@ class CitationsPlugin extends GenericPlugin
     {
         $application = Application::getName();
         $submission = null;
-        if ('ojs' === $application) {
+        if (str_contains($application, 'ojs')) {
             $submission = $smarty->getTemplateVars('article');
-        } elseif ('ops' === $application) {
+        } elseif (str_contains($application, 'ops')) {
             $submission = $smarty->getTemplateVars('preprint');
         }
-
-        return $submission ?? $submission->getStoredPubId('doi');
+        return $submission?->getStoredPubId('doi');
     }
 
 }
