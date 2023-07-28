@@ -103,40 +103,6 @@ function createListElement(item) {
     return prototype;
 }
 
-function createListElement2(item) {
-    let outerDiv = document.createElement('div');
-    let img = document.createElement("img");
-    img.src = citationsImagePath + '/' + item['type'] + '.png';
-    img.alt = item['type'] + " Logo";
-    /*outerDiv.appendChild(img);*/
-    let author = document.createElement('div');
-    author.innerHTML = item['authors'] + ' (' + item['year'] + ')';
-    outerDiv.appendChild(author);
-    let title = document.createElement('span');
-    title.style.fontWeight = 'bold';
-    title.innerHTML = item['article_title'] + '. ';
-    outerDiv.append(title);
-    if (item['journal_title'] && item['journal_title'] !== '')
-        outerDiv.append(item['journal_title'] + ', ');
-    if (item['volume'] && item['volume'] !== '') {
-        outerDiv.append(" " + item['volume']);
-        if (item['issue'] && item['issue'] !== '')
-            outerDiv.append("(" + item['issue'] + '), ');
-        else
-            outerDiv.append(", ");
-    }
-    if (item['first_page'] && item['first_page'] !== ' :')
-        outerDiv.append(item['first_page'] + '.');
-    outerDiv.appendChild(document.createElement('br'));
-    let doi = document.createElement('a');
-    doi.href = "https://doi.org/" + item['doi'];
-    doi.target = "_blank";
-    doi.rel = "noreferrer";
-    doi.innerText = item['doi'];
-    outerDiv.append(doi);
-    return outerDiv;
-}
-
 
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
