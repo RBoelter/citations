@@ -3,7 +3,9 @@
 namespace APP\plugins\generic\citations\classes\client;
 
 use APP\core\Application;
+use APP\plugins\generic\citations\CitationsPlugin;
 use GuzzleHttp\Exception\GuzzleException;
+use Monolog\Logger;
 
 class CitationsHttpClient
 {
@@ -27,7 +29,8 @@ class CitationsHttpClient
                 $data = $response->getBody()->getContents();
             }
         } catch (GuzzleException $e) {
-            error_log($e->getMessage()); // TODO: remove
+            $logger = new Logger(CitationsPlugin::class);
+            $logger->debug($e->getMessage());
         }
 
         return $data;
