@@ -34,9 +34,9 @@ class CitationsPlugin extends GenericPlugin
             $templateMgr->addStyleSheet(
                 'citations', $request->getBaseUrl() . '/' . $this->getPluginPath() . '/css/citations.css'
             );
-            Hook::add('Templates::Article::Details', array($this, 'citationsContent'));
-            Hook::add('Templates::Preprint::Details', array($this, 'citationsContent'));
-            Hook::add('LoadHandler', array($this, 'setPageHandler'));
+            Hook::add('Templates::Article::Details', [$this, 'citationsContent']);
+            Hook::add('Templates::Preprint::Details', [$this, 'citationsContent']);
+            Hook::add('LoadHandler', [$this, 'setPageHandler']);
         }
         return $success;
     }
@@ -67,23 +67,23 @@ class CitationsPlugin extends GenericPlugin
         $contextId = $request->getContext()->getId();
         $settings = json_decode($this->getSetting($contextId, 'settings'), true);
         if (!empty($pubId) && !empty($settings)) {
-            $smarty->assign(array(
+            $smarty->assign([
                 'imagePath' => $request->getBaseUrl() . '/' . $this->getPluginPath() . '/images/',
                 'urlArgs' => ['doi' => $pubId],
                 'showGoogle' => $settings['showGoogle'] ?: 0,
                 'maxHeight' => $settings['maxHeight'] ?: 300
-            ));
+            ]);
             $smarty->addJavaScript('citations', $request->getBaseUrl() . '/' . $this->getPluginPath() . '/js/citations.js');
             $args[2] .= $smarty->fetch($this->getTemplateResource('citations.tpl'));
         }
     }
 
-
     public function setPageHandler($hookName, $params): bool
     {
-        $page = $params[0];
+        $page = &$params[0];
         if ($this->getEnabled() && $page === 'citations') {
-            define('HANDLER_CLASS', CitationsHandler::class);
+            $handler = &$params[3];
+            $handler = new CitationsHandler();
             return true;
         }
         return false;
@@ -95,9 +95,8 @@ class CitationsPlugin extends GenericPlugin
     public function getActions($request, $actionArgs): array
     {
         $router = $request->getRouter();
-        import('lib.pkp.classes.linkAction.request.AjaxModal');
         return array_merge(
-            $this->getEnabled() ? array(
+            $this->getEnabled() ? [
                 new LinkAction(
                     'settings',
                     new AjaxModal(
@@ -107,16 +106,18 @@ class CitationsPlugin extends GenericPlugin
                             null,
                             'manage',
                             null,
-                            array('verb' => 'settings', 'plugin' => $this->getName(),
+                            [
+                                'verb' => 'settings', 
+                                'plugin' => $this->getName(),
                                 'category' => 'generic'
-                            )
+                            ]
                         ),
                         $this->getDisplayName()
                     ),
                     __('manager.plugins.settings'),
                     null
                 ),
-            ) : array(),
+            ] : [],
             parent::getActions($request, $actionArgs)
         );
     }

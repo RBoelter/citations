@@ -27,6 +27,9 @@ class CitationsHandler extends Handler
         if (empty($doi) || empty($settings)) {
             return new JSONMessage(false, empty($settings) ? 'Missing settings' : 'Missing DOI');
         }
+        
+        $result = [];
+        
         if ('all' === $settings['provider'] || 'crossref' === $settings['provider']) {
             $crossrefProcessor = new CrossrefProcessor();
             $result['crossref'] = $crossrefProcessor->process($doi, $settings);
@@ -58,9 +61,9 @@ class CitationsHandler extends Handler
         $plugin = PluginRegistry::getPlugin('generic', 'citationsplugin');
         $contextId = $request->getContext()->getId();
         if (null !== $contextId) {
-            return json_decode($plugin->getSetting($contextId, 'settings') ?? [], true);
+            return json_decode($plugin->getSetting($contextId, 'settings') ?? '[]', true);
         } else {
-            return json_decode('', true);
+            return [];
         }
     }
 
