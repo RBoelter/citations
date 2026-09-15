@@ -81,9 +81,12 @@ class CitationsPlugin extends GenericPlugin
 
     public function setPageHandler($hookName, $params): bool
     {
-        $page = $params[0];
+        $page = &$params[0];
         if ($this->getEnabled() && $page === 'citations') {
-            define('HANDLER_CLASS', CitationsHandler::class);
+            // HANDLER_CLASS is no longer supported in OJS 3.5+; the LoadHandler
+            // hook now injects the handler instance directly via $params[3].
+            $handler = &$params[3];
+            $handler = new CitationsHandler();
             return true;
         }
         return false;
@@ -95,7 +98,8 @@ class CitationsPlugin extends GenericPlugin
     public function getActions($request, $actionArgs): array
     {
         $router = $request->getRouter();
-        import('lib.pkp.classes.linkAction.request.AjaxModal');
+        // import() was removed in OJS 3.5+; AjaxModal is already reachable
+        // via the `use` statement at the top of this file.
         return array_merge(
             $this->getEnabled() ? array(
                 new LinkAction(

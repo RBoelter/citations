@@ -10,7 +10,7 @@ use Exception;
 use PKP\form\Form;
 use PKP\form\validation\FormValidatorCSRF;
 use PKP\form\validation\FormValidatorPost;
-use PKP\notification\PKPNotification;
+use PKP\notification\Notification;
 
 class CitationsSettingsForm extends Form
 {
@@ -97,7 +97,7 @@ class CitationsSettingsForm extends Form
         $notificationMgr = new NotificationManager();
         $notificationMgr->createTrivialNotification(
             Application::get()->getRequest()->getUser()->getId(),
-            PKPNotification::NOTIFICATION_TYPE_SUCCESS,
+            Notification::NOTIFICATION_TYPE_SUCCESS,
             ['contents' => __('common.changesSaved')]
         );
         return parent::execute(...$args);

@@ -58,9 +58,12 @@ class CitationsHandler extends Handler
         $plugin = PluginRegistry::getPlugin('generic', 'citationsplugin');
         $contextId = $request->getContext()->getId();
         if (null !== $contextId) {
-            return json_decode($plugin->getSetting($contextId, 'settings') ?? [], true);
+            // json_decode() requires a string; getSetting() can return null
+            // before the plugin has ever been configured/saved.
+            return json_decode($plugin->getSetting($contextId, 'settings') ?? '[]', true);
         } else {
-            return json_decode('', true);
+            // json_decode('') is null, but this method is typed to return array.
+            return [];
         }
     }
 
