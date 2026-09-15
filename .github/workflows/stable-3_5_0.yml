@@ -1,0 +1,31 @@
+# Copy into a plugin repo's .github/workflows/ on the stable-3_5_0 branch.
+# Generic - see stable-3_4_0.yml for notes; only php/node/branch differ.
+on: [push, pull_request]
+name: CI (OJS 3.5)
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - application: ojs
+            php-version: 8.2
+            database: mysql
+          - application: ojs
+            php-version: 8.3
+            database: mysql
+          - application: ojs
+            php-version: 8.2
+            database: pgsql
+          - application: ojs
+            php-version: 8.3
+            database: pgsql
+    steps:
+      - uses: pkp/pkp-github-actions@v1
+        with:
+          node_version: 20
+          branch: stable-3_5_0
+          repository: pkp
+          plugin: true
+          dataset_inject: true
