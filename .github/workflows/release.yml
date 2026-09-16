@@ -21,7 +21,11 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
+      # fetch-depth: 0 - the changelog step needs full tag/commit history,
+      # which the default shallow (depth-1) checkout doesn't have.
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Read plugin metadata from version.xml
         id: meta
@@ -40,13 +44,37 @@ jobs:
           echo "file=$OUT" >> "$GITHUB_OUTPUT"
           echo "md5=$(md5sum "$OUT" | awk '{print $1}')" >> "$GITHUB_OUTPUT"
 
+      - name: Build changelog since the previous release on this OJS line
+        id: changelog
+        run: |
+          # Tags follow vX_Y_Z-N per OJS line (e.g. v3_5_0-0, v3_5_0-1, ...).
+          # Find the previous one with the same vX_Y_Z- prefix and list the
+          # commits since it. Falls back to "initial release" if there isn't
+          # one yet (first release on a new line).
+          PREFIX="${GITHUB_REF_NAME%-*}-"
+          PREV_TAG=$(git tag --list "${PREFIX}*" --sort=-v:refname | grep -vFx "${GITHUB_REF_NAME}" | head -1 || true)
+          {
+            echo "changelog<<CHANGELOG_EOF"
+            if [ -n "$PREV_TAG" ]; then
+              echo "Changes since $PREV_TAG:"
+              echo
+              git log --no-merges --pretty=format:"- %s" "${PREV_TAG}..${GITHUB_REF_NAME}"
+            else
+              echo "Initial release."
+            fi
+            echo
+            echo "CHANGELOG_EOF"
+          } >> "$GITHUB_OUTPUT"
+
       - name: Create GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release create "${GITHUB_REF_NAME}" "${{ steps.build.outputs.file }}" \
             --title "${{ steps.meta.outputs.name }} ${{ steps.meta.outputs.version }}" \
-            --notes "version: ${{ steps.meta.outputs.version }}
+            --notes "${{ steps.changelog.outputs.changelog }}
+
+          version: ${{ steps.meta.outputs.version }}
           md5: ${{ steps.build.outputs.md5 }}
 
           Manual next step (not automated): update this plugin's entry in
