@@ -1,0 +1,9 @@
+* text=auto eol=lf
+
+# Kept out of `git archive` (and therefore out of `pkp package` tarballs) -
+# dev-only tooling that has no business in a released plugin package.
+/.github export-ignore
+/.gitattributes export-ignore
+/.editorconfig export-ignore
+/cypress export-ignore
+/.ddev export-ignore

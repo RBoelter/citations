@@ -1,0 +1,35 @@
+# Copy into a plugin repo's .github/workflows/ on the stable-3_4_0 branch.
+# Generic - reads the plugin's category/name from its own version.xml via
+# pkp-github-actions, so nothing plugin-specific needs to change here.
+# Pattern verified against the real pkp/staticPages stable-3_4_0 workflow.
+on: [push, pull_request]
+name: CI (OJS 3.4)
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - application: ojs
+            php-version: 8.1
+            database: mysql
+          - application: ojs
+            php-version: 8.2
+            database: mysql
+          - application: ojs
+            php-version: 8.1
+            database: pgsql
+          - application: ojs
+            php-version: 8.2
+            database: pgsql
+    steps:
+      - uses: pkp/pkp-github-actions@v1
+        with:
+          node_version: 16
+          branch: stable-3_4_0
+          repository: pkp
+          plugin: true
+          # dataset_inject seeds a working install+DB before tests.sh runs -
+          # needed for anything beyond an install/build smoke test.
+          dataset_inject: true

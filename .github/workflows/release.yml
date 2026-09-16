@@ -1,0 +1,53 @@
+# Copy into a plugin repo's .github/workflows/. Same file works on every
+# branch. Builds the tar.gz the same way `pkp package` does and attaches it
+# to a GitHub Release on THIS repo - nothing more. It does NOT touch, open a
+# PR against, or otherwise submit to pkp/plugin-gallery; that stays a manual
+# step, on purpose (see docs.pkp.sfu.ca/dev/plugin-guide/en/release).
+#
+# Trigger: push a tag matching the PKP convention, e.g. `v3_5_0-1` for
+# version.xml <release>3.5.0.1</release> (first three parts joined by "_",
+# the fourth appended after "-" - see `pkp package` for the exact rule).
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read plugin metadata from version.xml
+        id: meta
+        run: |
+          NAME=$(python3 -c "import xml.etree.ElementTree as ET; print(ET.parse('version.xml').getroot().find('application').text)")
+          VERSION=$(python3 -c "import xml.etree.ElementTree as ET; print(ET.parse('version.xml').getroot().find('release').text)")
+          echo "name=$NAME" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Build package (relies on .gitattributes export-ignore)
+        id: build
+        run: |
+          NAME="${{ steps.meta.outputs.name }}"
+          OUT="${NAME}-${GITHUB_REF_NAME}.tar.gz"
+          git archive --prefix="${NAME}/" -o "$OUT" HEAD
+          echo "file=$OUT" >> "$GITHUB_OUTPUT"
+          echo "md5=$(md5sum "$OUT" | awk '{print $1}')" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" "${{ steps.build.outputs.file }}" \
+            --title "${{ steps.meta.outputs.name }} ${{ steps.meta.outputs.version }}" \
+            --notes "version: ${{ steps.meta.outputs.version }}
+          md5: ${{ steps.build.outputs.md5 }}
+
+          Manual next step (not automated): update this plugin's entry in
+          pkp/plugin-gallery's plugins.xml with this package URL and md5."
