@@ -1,10 +1,8 @@
 # OJS Scopus/Crossref Plugin
-![CI Tests](https://github.com/RBoelter/citations/workflows/CI%20Tests/badge.svg?branch=master)
-
 ![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/RBoelter/citations?include_prereleases&label=latest%20release)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/RBoelter/citations)
 ![GitHub](https://img.shields.io/github/license/RBoelter/citations)
-[![OJS-Version](https://img.shields.io/badge/pkp--ojs-3.3.x-brightgreen)](https://github.com/pkp/ojs/tree/master)
+[![OJS-Version](https://img.shields.io/badge/pkp--ojs-3.4.x-brightgreen)](https://github.com/pkp/ojs/tree/stable-3_4_0)
 ![GitHub All Releases](https://img.shields.io/github/downloads/RBoelter/citations/total)
 
 ## Installation
@@ -16,7 +14,7 @@ Go to the plugin settings and fill in the required fields:
 ---
 ### IMPORTANT NOTE
 
-***You must [contact Crossref](https://www.crossref.org/contact) to ask for the Cited-by service to be enabled for your prefix(es), if you want to use Crossref within this Plugin!***
+***The Cited-by service no longer needs to be requested from Crossref - it is enabled for everyone by default. To use Crossref within this plugin, enter your existing Crossref credentials (the same ones used for the DOIs plugin) in the settings below.***
 
 ---
 
