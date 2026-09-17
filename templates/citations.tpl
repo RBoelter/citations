@@ -16,7 +16,9 @@
             </a>
         </div>
         <div class="citations-count-europepmc">
-            <a href="https://europepmc.org/search?scope=fulltext&query={$urlArgs['doi']}" target="_blank" rel="noreferrer">
+            {* Same REF-scoped query the badge count comes from, so the linked
+               result list matches the number shown next to it. *}
+            <a href="https://europepmc.org/search?query=REF%3A%22{$urlArgs['doi']|escape:'url'}%22" target="_blank" rel="noreferrer">
                 <img src="{$imagePath}pmc.png" alt="Europe PMC"/>
                 <br/>
                 <span class="badge_total"></span>
