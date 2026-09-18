@@ -23,7 +23,7 @@ jobs:
     steps:
       # fetch-depth: 0 - the changelog step needs full tag/commit history,
       # which the default shallow (depth-1) checkout doesn't have.
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
