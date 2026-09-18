@@ -37,8 +37,9 @@ jobs:
 
       - name: Build package (relies on .gitattributes export-ignore)
         id: build
+        env:
+          NAME: ${{ steps.meta.outputs.name }}
         run: |
-          NAME="${{ steps.meta.outputs.name }}"
           OUT="${NAME}-${GITHUB_REF_NAME}.tar.gz"
           git archive --prefix="${NAME}/" -o "$OUT" HEAD
           echo "file=$OUT" >> "$GITHUB_OUTPUT"
@@ -69,13 +70,20 @@ jobs:
       - name: Create GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
+          NAME: ${{ steps.meta.outputs.name }}
+          VERSION: ${{ steps.meta.outputs.version }}
+          FILE: ${{ steps.build.outputs.file }}
+          MD5: ${{ steps.build.outputs.md5 }}
+          CHANGELOG: ${{ steps.changelog.outputs.changelog }}
         run: |
-          gh release create "${GITHUB_REF_NAME}" "${{ steps.build.outputs.file }}" \
-            --title "${{ steps.meta.outputs.name }} ${{ steps.meta.outputs.version }}" \
-            --notes "${{ steps.changelog.outputs.changelog }}
-
-          version: ${{ steps.meta.outputs.version }}
-          md5: ${{ steps.build.outputs.md5 }}
-
-          Manual next step (not automated): update this plugin's entry in
-          pkp/plugin-gallery's plugins.xml with this package URL and md5."
+          # Everything reaches the script as an environment variable and is never
+          # spliced into the script text. A commit subject containing quotes,
+          # backticks or $(...) would otherwise break - or inject into - the
+          # shell command (this is what failed the 3.4.0.1 release on a subject
+          # with "quotes" in it).
+          {
+            printf '%s\n' "$CHANGELOG"
+            printf 'version: %s\nmd5: %s\n\n' "$VERSION" "$MD5"
+            printf "Manual next step (not automated): update this plugin's entry in\npkp/plugin-gallery's plugins.xml with this package URL and md5.\n"
+          } > release-notes.md
+          gh release create "${GITHUB_REF_NAME}" "$FILE" --title "$NAME $VERSION" --notes-file release-notes.md
