@@ -19,7 +19,7 @@ permissions:
 
 jobs:
   release:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       # fetch-depth: 0 - the changelog step needs full tag/commit history,
       # which the default shallow (depth-1) checkout doesn't have.
